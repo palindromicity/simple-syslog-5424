@@ -4,17 +4,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import com.github.palindromicity.syslog.NameGenerator;
+import com.github.palindromicity.syslog.KeyProvider;
 
+/**
+ * This utility class takes a 'flattened' syslog map and un-flattens it.
+ */
 public class StructuredDataUtil {
 
   @SuppressWarnings("unchecked")
   public static Map<String, Object> unFlattenStructuredData(Map<String, Object> flattenedMap,
-      NameGenerator nameGenerator) {
+      KeyProvider keyProvider) {
+    Validate.notNull(keyProvider, "keyProvider");
+    Validate.notNull(flattenedMap, "flattenedMap");
     boolean hasStructuredData = false;
     final Map<String, Object> returnMap = new HashMap<>();
     for (String key : flattenedMap.keySet()) {
-      if (key.startsWith(nameGenerator.getStructuredBase())) {
+      if (key.startsWith(keyProvider.getStructuredBase())) {
         hasStructuredData = true;
         break;
       }
@@ -24,7 +29,7 @@ public class StructuredDataUtil {
       return returnMap;
     }
     flattenedMap.forEach((key, value) -> {
-      Matcher matcher = nameGenerator.getStructuredElementIdParamNamePattern().matcher(key);
+      Matcher matcher = keyProvider.getStructuredElementIdParamNamePattern().matcher(key);
       if (matcher.matches()) {
         String id = matcher.group(1);
         String name = matcher.group(2);

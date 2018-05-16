@@ -20,7 +20,7 @@ package com.github.palindromicity.syslog.dsl;
 
 import java.util.Map;
 
-import com.github.palindromicity.syslog.DefaultNameGenerator;
+import com.github.palindromicity.syslog.DefaultKeyProvider;
 import com.github.palindromicity.syslog.dsl.generated.Rfc5424Lexer;
 import com.github.palindromicity.syslog.dsl.generated.Rfc5424Parser;
 import com.github.palindromicity.syslog.util.StructuredDataUtil;
@@ -61,7 +61,7 @@ public class Syslog5424ListenerTest {
     Assert.assertEquals(expectedMessageId, map.get(SyslogFieldKeys.HEADER_MSGID.getField()));
 
     // structured data
-    Map<String, Object> structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultNameGenerator());
+    Map<String, Object> structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultKeyProvider());
     Assert.assertTrue(structured.containsKey("exampleSDID@32473"));
     Map<String, Object> example1 = (Map<String, Object>) structured.get("exampleSDID@32473");
     Assert.assertTrue(example1.containsKey("iut"));
@@ -95,7 +95,7 @@ public class Syslog5424ListenerTest {
     Assert.assertFalse(map.containsKey(SyslogFieldKeys.HEADER_MSGID.getField()));
 
     // structured data
-    Map<String, Object> structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultNameGenerator());
+    Map<String, Object> structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultKeyProvider());
     Assert.assertTrue(structured.containsKey("exampleSDID@32473"));
     Map<String, Object> example1 = (Map<String, Object>) structured.get("exampleSDID@32473");
     Assert.assertTrue(example1.containsKey("iut"));
@@ -137,7 +137,7 @@ public class Syslog5424ListenerTest {
   private static Map<String, Object> handleFile(String fileName) throws Exception {
     Rfc5424Lexer lexer = new Rfc5424Lexer(new ANTLRFileStream(fileName));
     Rfc5424Parser parser = new Rfc5424Parser(new CommonTokenStream(lexer));
-    Syslog5424Listener listener = new Syslog5424Listener(new DefaultNameGenerator());
+    Syslog5424Listener listener = new Syslog5424Listener(new DefaultKeyProvider());
     parser.addParseListener(listener);
     Rfc5424Parser.Syslog_msgContext ctx = parser.syslog_msg();
     return listener.getMsgMap();
