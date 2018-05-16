@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/palindromicity/simple-syslog-5424.svg?branch=master)](https://travis-ci.org/palindromicity/simple-syslog-5424)
+
 ### Simple Syslog 5424
 
 TRAVIS
