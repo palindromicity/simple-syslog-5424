@@ -11,14 +11,16 @@ import java.util.function.Consumer;
 public abstract class AbstractRfc5425SyslogParserTest {
 
   protected static List<Map<String, Object>> handleFile(String fileName, SyslogParser parser) throws Exception {
-    Reader reader = new BufferedReader(new FileReader(new File(fileName)));
-    return parser.parseLines(reader);
+    try (Reader reader = new BufferedReader(new FileReader(new File(fileName)))) {
+      return parser.parseLines(reader);
+    }
   }
 
   protected static void handleFile(String fileName, SyslogParser parser, Consumer<Map<String, Object>> consumer)
       throws Exception {
-    Reader reader = new BufferedReader(new FileReader(new File(fileName)));
-    parser.parseLines(reader, consumer);
+    try (Reader reader = new BufferedReader(new FileReader(new File(fileName)))) {
+      parser.parseLines(reader, consumer);
+    }
   }
 
   protected static Map<String, Object> handleLine(String line, SyslogParser parser) throws Exception {
