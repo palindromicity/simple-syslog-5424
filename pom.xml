@@ -4,11 +4,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.palindromicity</groupId>
-  <artifactId>syslog-antlr-5424</artifactId>
+  <artifactId>simple-syslog-5424</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>syslog-antlr-5424</name>
+  <name>simple-syslog-5424</name>
   <organization>
     <name>palindromicity</name>
     <url>https://github.com/palindromicity</url>
