@@ -46,7 +46,7 @@ public class Rfc5424SyslogParserTest extends AbstractRfc5425SyslogParserTest {
     Assert.assertEquals(expectedMessageId, map.get(SyslogFieldKeys.HEADER_MSGID.getField()));
 
     // structured data
-    Map<String, Object> structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultNameGenerator());
+    Map<String, Object> structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultKeyProvider());
     Assert.assertTrue(structured.containsKey("exampleSDID@32473"));
     Map<String, Object> example1 = (Map<String, Object>) structured.get("exampleSDID@32473");
     Assert.assertTrue(example1.containsKey("iut"));
@@ -82,7 +82,7 @@ public class Rfc5424SyslogParserTest extends AbstractRfc5425SyslogParserTest {
       Assert.assertEquals(expectedMessageId, map.get(SyslogFieldKeys.HEADER_MSGID.getField()));
 
       // structured data
-      Map<String, Object> structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultNameGenerator());
+      Map<String, Object> structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultKeyProvider());
       Assert.assertTrue(structured.containsKey("exampleSDID@32473"));
       Map<String, Object> example1 = (Map<String, Object>) structured.get("exampleSDID@32473");
       Assert.assertTrue(example1.containsKey("iut"));

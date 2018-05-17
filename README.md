@@ -2,9 +2,7 @@
 
 ### Simple Syslog 5424
 
-TRAVIS
-
-A java library for parsing valid Syslog RFC 5424 logs.
+A java library for parsing valid Syslog [IETF RFC 5424](https://tools.ietf.org/html/rfc5424) logs.
 
 
 Basic example
