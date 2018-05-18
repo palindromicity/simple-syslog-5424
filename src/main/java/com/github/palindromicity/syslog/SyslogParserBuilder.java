@@ -18,6 +18,12 @@ public class SyslogParserBuilder {
   private KeyProvider keyProvider = new DefaultKeyProvider();
 
   /**
+   * The {@link NilPolicy}.
+   * Defaults to {@link NilPolicy#OMIT}
+   */
+  private NilPolicy nilPolicy = NilPolicy.OMIT;
+
+  /**
    * Add a {@link SyslogSpecification} to the builder.
    * @param specification the specification
    * @return {@code SyslogParserBuilder}
@@ -38,13 +44,23 @@ public class SyslogParserBuilder {
   }
 
   /**
+   * Set the {@link NilPolicy} to the builder.
+   * @param nilPolicy the {@link NilPolicy}
+   * @return {@code SyslogParserBuilder}
+   */
+  public SyslogParserBuilder withNilPolicy(NilPolicy nilPolicy) {
+    this.nilPolicy = nilPolicy;
+    return this;
+  }
+
+  /**
    * Builds a new {@link SyslogParser} instance using options if provided.
    * @return {@link SyslogParser}
    * @throws IllegalStateException if specification is unknown
    */
   public SyslogParser build() {
     if (specification == SyslogSpecification.RFC_5424) {
-      return new Rfc5424SyslogParser(keyProvider);
+      return new Rfc5424SyslogParser(keyProvider, nilPolicy);
     }
     throw new IllegalStateException("unknown SyslogSpecification " + specification.name());
   }
