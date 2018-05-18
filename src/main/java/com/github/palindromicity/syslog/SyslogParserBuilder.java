@@ -32,7 +32,7 @@ public class SyslogParserBuilder {
    * @param keyProvider the {@link KeyProvider}
    * @return {@code SyslogParserBuilder}
    */
-  public SyslogParserBuilder withNameGenerator(final KeyProvider keyProvider) {
+  public SyslogParserBuilder withKeyProvider(final KeyProvider keyProvider) {
     this.keyProvider = keyProvider;
     return this;
   }
