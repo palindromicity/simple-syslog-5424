@@ -105,16 +105,19 @@ For example you would build a 'parser' that used your implementations, most like
 
 ### Questions
 
-1. Why not just use [java-grok](https://github.com/thekrakken/java-grok)?
-Though I love java-grok (it is used in [Apache Metron](https://metron.apache.org) and [Apache Nifi](https://nifi.apache.org) which I contribute to), and have even
-submitted PRs to it, it and other Regex based parsers do not handle Syslog 5424 Structured Data.  I wanted something
-that did.  I have not found any regex based approach which handles structured data in a single pass.  If you find one, let me know!
+- __*Why not just use [java-grok](https://github.com/thekrakken/java-grok)?*__
 
-2. Why not fix the groks to handle it?  Or create regexes outside of grok?
-I'm not good enough at regex, and couldn't write something that worked single pass.
+  Though I love java-grok (it is used in [Apache Metron](https://metron.apache.org) and [Apache Nifi](https://nifi.apache.org) which I contribute to), and have even
+  submitted PRs to it, it and other Regex based parsers do not handle Syslog 5424 Structured Data.  I wanted something
+  that did.  I have not found any regex based approach which handles structured data in a single pass.  If you find one, let me know!
 
-3. Why not write a custom state machine type parser?
-I like Antlr and wanted to try it ;)
+- __*Why not fix the groks to handle it?  Or create regexes outside of grok?*__
+
+  I'm not good enough at regex, and couldn't write something that worked single pass.
+
+- __*Why not write a custom state machine type parser?*__
+
+  I like Antlr and wanted to try it ;)
 
 --------
 TODO: Maven after publishing
