@@ -26,14 +26,26 @@ class Rfc5424SyslogParser implements SyslogParser {
   private KeyProvider keyProvider;
 
   /**
+   * {@link NilPolicy} for the {@link Syslog5424Listener}.
+   */
+  private NilPolicy nilPolicy = NilPolicy.OMIT;
+
+  /**
    * Create a new {@code Rfc5424SyslogParser}.
    *
    * @param keyProvider {@link com.github.palindromicity.syslog.KeyProvider} to provide keys for the
    * {@link Syslog5424Listener}.
    */
-  Rfc5424SyslogParser(KeyProvider keyProvider) {
+  Rfc5424SyslogParser(KeyProvider keyProvider ) {
+    this(keyProvider, null);
+  }
+
+  Rfc5424SyslogParser(KeyProvider keyProvider, NilPolicy nilPolicy) {
     Validate.notNull(keyProvider, "keyProvider");
     this.keyProvider = keyProvider;
+    if (nilPolicy != null) {
+      this.nilPolicy = nilPolicy;
+    }
   }
 
   @Override
@@ -41,7 +53,7 @@ class Rfc5424SyslogParser implements SyslogParser {
     Validate.notBlank(syslogLine, "syslogLine");
     Rfc5424Lexer lexer = new Rfc5424Lexer(new ANTLRInputStream(syslogLine));
     Rfc5424Parser parser = new Rfc5424Parser(new CommonTokenStream(lexer));
-    Syslog5424Listener listener = new Syslog5424Listener(keyProvider);
+    Syslog5424Listener listener = new Syslog5424Listener(keyProvider, nilPolicy);
     parser.addParseListener(listener);
     Rfc5424Parser.Syslog_msgContext ctx = parser.syslog_msg();
     return listener.getMsgMap();

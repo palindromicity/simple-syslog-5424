@@ -21,6 +21,7 @@ package com.github.palindromicity.syslog.dsl;
 import java.util.Map;
 
 import com.github.palindromicity.syslog.DefaultKeyProvider;
+import com.github.palindromicity.syslog.NilPolicy;
 import com.github.palindromicity.syslog.dsl.generated.Rfc5424Lexer;
 import com.github.palindromicity.syslog.dsl.generated.Rfc5424Parser;
 import com.github.palindromicity.syslog.util.StructuredDataUtil;
@@ -83,7 +84,7 @@ public class Syslog5424ListenerTest {
   }
 
   @Test
-  public void testMissingHeaderField() throws Exception {
+  public void testMissingHeaderFieldOmit() throws Exception {
     Map<String, Object> map = handleFile("src/test/resources/log.txt");
     Assert.assertEquals(expectedVersion, map.get(SyslogFieldKeys.HEADER_VERSION.getField()));
     Assert.assertEquals(expectedMessage, map.get(SyslogFieldKeys.MESSAGE.getField()));
@@ -93,6 +94,72 @@ public class Syslog5424ListenerTest {
     Assert.assertEquals(expectedProcId, map.get(SyslogFieldKeys.HEADER_PROCID.getField()));
     Assert.assertEquals(expectedTimestamp, map.get(SyslogFieldKeys.HEADER_TIMESTAMP.getField()));
     Assert.assertFalse(map.containsKey(SyslogFieldKeys.HEADER_MSGID.getField()));
+
+    // structured data
+    Map<String, Object> structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultKeyProvider());
+    Assert.assertTrue(structured.containsKey("exampleSDID@32473"));
+    Map<String, Object> example1 = (Map<String, Object>) structured.get("exampleSDID@32473");
+    Assert.assertTrue(example1.containsKey("iut"));
+    Assert.assertTrue(example1.containsKey("eventSource"));
+    Assert.assertTrue(example1.containsKey("eventID"));
+    Assert.assertEquals(expectedIUT1, example1.get("iut").toString());
+    Assert.assertEquals(expectedEventSource1, example1.get("eventSource").toString());
+    Assert.assertEquals(expectedEventID1, example1.get("eventID").toString());
+
+    Assert.assertTrue(structured.containsKey("exampleSDID@32480"));
+    Map<String, Object> example2 = (Map<String, Object>) structured.get("exampleSDID@32480");
+    Assert.assertTrue(example2.containsKey("iut"));
+    Assert.assertTrue(example2.containsKey("eventSource"));
+    Assert.assertTrue(example2.containsKey("eventID"));
+    Assert.assertEquals(expectedIUT2, example2.get("iut").toString());
+    Assert.assertEquals(expectedEventSource2, example2.get("eventSource").toString());
+    Assert.assertEquals(expectedEventID2, example2.get("eventID").toString());
+  }
+
+  @Test
+  public void testMissingHeaderFieldNull() throws Exception {
+    Map<String, Object> map = handleFile("src/test/resources/log.txt", NilPolicy.NULL);
+    Assert.assertEquals(expectedVersion, map.get(SyslogFieldKeys.HEADER_VERSION.getField()));
+    Assert.assertEquals(expectedMessage, map.get(SyslogFieldKeys.MESSAGE.getField()));
+    Assert.assertEquals(expectedAppName, map.get(SyslogFieldKeys.HEADER_APPNAME.getField()));
+    Assert.assertEquals(expectedHostName, map.get(SyslogFieldKeys.HEADER_HOSTNAME.getField()));
+    Assert.assertEquals(expectedPri, map.get(SyslogFieldKeys.HEADER_PRI.getField()));
+    Assert.assertEquals(expectedProcId, map.get(SyslogFieldKeys.HEADER_PROCID.getField()));
+    Assert.assertEquals(expectedTimestamp, map.get(SyslogFieldKeys.HEADER_TIMESTAMP.getField()));
+    Assert.assertNull(map.get(SyslogFieldKeys.HEADER_MSGID.getField()));
+
+    // structured data
+    Map<String, Object> structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultKeyProvider());
+    Assert.assertTrue(structured.containsKey("exampleSDID@32473"));
+    Map<String, Object> example1 = (Map<String, Object>) structured.get("exampleSDID@32473");
+    Assert.assertTrue(example1.containsKey("iut"));
+    Assert.assertTrue(example1.containsKey("eventSource"));
+    Assert.assertTrue(example1.containsKey("eventID"));
+    Assert.assertEquals(expectedIUT1, example1.get("iut").toString());
+    Assert.assertEquals(expectedEventSource1, example1.get("eventSource").toString());
+    Assert.assertEquals(expectedEventID1, example1.get("eventID").toString());
+
+    Assert.assertTrue(structured.containsKey("exampleSDID@32480"));
+    Map<String, Object> example2 = (Map<String, Object>) structured.get("exampleSDID@32480");
+    Assert.assertTrue(example2.containsKey("iut"));
+    Assert.assertTrue(example2.containsKey("eventSource"));
+    Assert.assertTrue(example2.containsKey("eventID"));
+    Assert.assertEquals(expectedIUT2, example2.get("iut").toString());
+    Assert.assertEquals(expectedEventSource2, example2.get("eventSource").toString());
+    Assert.assertEquals(expectedEventID2, example2.get("eventID").toString());
+  }
+
+  @Test
+  public void testMissingHeaderFieldDash() throws Exception {
+    Map<String, Object> map = handleFile("src/test/resources/log.txt", NilPolicy.DASH);
+    Assert.assertEquals(expectedVersion, map.get(SyslogFieldKeys.HEADER_VERSION.getField()));
+    Assert.assertEquals(expectedMessage, map.get(SyslogFieldKeys.MESSAGE.getField()));
+    Assert.assertEquals(expectedAppName, map.get(SyslogFieldKeys.HEADER_APPNAME.getField()));
+    Assert.assertEquals(expectedHostName, map.get(SyslogFieldKeys.HEADER_HOSTNAME.getField()));
+    Assert.assertEquals(expectedPri, map.get(SyslogFieldKeys.HEADER_PRI.getField()));
+    Assert.assertEquals(expectedProcId, map.get(SyslogFieldKeys.HEADER_PROCID.getField()));
+    Assert.assertEquals(expectedTimestamp, map.get(SyslogFieldKeys.HEADER_TIMESTAMP.getField()));
+    Assert.assertEquals("-",map.get(SyslogFieldKeys.HEADER_MSGID.getField()));
 
     // structured data
     Map<String, Object> structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultKeyProvider());
@@ -135,9 +202,13 @@ public class Syslog5424ListenerTest {
   }
 
   private static Map<String, Object> handleFile(String fileName) throws Exception {
+    return handleFile(fileName, NilPolicy.OMIT);
+  }
+
+  private static Map<String, Object> handleFile(String fileName, NilPolicy nilPolicy) throws Exception {
     Rfc5424Lexer lexer = new Rfc5424Lexer(new ANTLRFileStream(fileName));
     Rfc5424Parser parser = new Rfc5424Parser(new CommonTokenStream(lexer));
-    Syslog5424Listener listener = new Syslog5424Listener(new DefaultKeyProvider());
+    Syslog5424Listener listener = new Syslog5424Listener(new DefaultKeyProvider(),nilPolicy);
     parser.addParseListener(listener);
     Rfc5424Parser.Syslog_msgContext ctx = parser.syslog_msg();
     return listener.getMsgMap();

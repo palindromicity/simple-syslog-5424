@@ -82,6 +82,23 @@ The default `KeyProvider` : `DefaultKeyProvider` provides keys using the `Syslog
 
 A custom `KeyProvider` can be supplied to the `SyslogParserBuilder` if there is a different key strategy required.
 
+##### NilPolicy
+The `NilPolicy` governs how the parser handles *nil* message parts.  That is message parts that can be *nil* as part of a valid message;
+
+- HOSTNAME
+- APPNAME
+- PROCID
+- MSGID
+- TIMESTAMP
+
+###### Policies
+
+- OMIT : The map will not contain an entry for that field
+- NULL : The map will contain a null entry for that field
+- DASH : The map will contain a '-' for that field
+
+The default policy is `OMIT`.
+
 
 ### Creating your own Parsers
 
