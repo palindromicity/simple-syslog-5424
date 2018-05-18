@@ -98,7 +98,7 @@ For example you would build a 'parser' that used your implementations, most like
     Rfc5424Listener listener = new MyCustomListener(keyProvider);
     parser.addParseListener(listener);
     Rfc5424Parser.Syslog_msgContext ctx = parser.syslog_msg();
-    return listener.getMsgMap();
+    return listener.getMyCustomResult();
 ```
 
 --------
