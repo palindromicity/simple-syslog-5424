@@ -137,4 +137,18 @@ For example you would build a 'parser' that used your implementations, most like
   I like Antlr and wanted to try it ;)
 
 --------
-TODO: Maven after publishing
+
+```xml
+<repositories>
+  <repository>
+    <id>bintray</id>
+    <url>http://dl.bintray.com/palndromicity/simple-syslog-5424</url>
+    <releases>
+      <enabled>true</enabled>
+    </releases>
+    <snapshots>
+      <enabled>false</enabled>
+    </snapshots>
+  </repository>
+</repositories>
+```
