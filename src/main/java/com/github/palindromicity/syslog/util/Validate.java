@@ -28,7 +28,7 @@ public class Validate {
    *
    * @param object The object to validate
    * @param name the name to use in the thrown exception
-   * @throws {@code IllegalArgumentException} if object is null
+   * @throws IllegalArgumentException if object is null
    */
   public static void notNull(Object object, String name) {
     if (object == null) {
@@ -41,7 +41,7 @@ public class Validate {
    *
    * @param string The String to validate
    * @param name the name to use in the thrown exception
-   * @throws {@code IllegalArgumentException} if string is null or empty
+   * @throws IllegalArgumentException if string is null or empty
    */
   public static void notBlank(String string, String name) {
     if (string == null || string.isEmpty() || string.trim().isEmpty()) {
