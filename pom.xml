@@ -13,6 +13,12 @@
     <name>palindromicity</name>
     <url>https://github.com/palindromicity</url>
   </organization>
+  <scm>
+    <connection>scm:git:https://github.com/palindromicity/simple-syslog-5424.git</connection>
+    <developerConnection>scm:git:git@github.com:palindromicity/simple-syslog-5424.git</developerConnection>
+    <url>https://github.com/palindromicity/simple-syslog-5424</url>
+    <tag>HEAD</tag>
+  </scm>
   <prerequisites>
     <maven>${maven.min-version}</maven>
   </prerequisites>
@@ -27,6 +33,13 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <global_antlr_version>4.5</global_antlr_version>
   </properties>
+  <distributionManagement>
+    <repository>
+      <id>bintray-palindromicity-simple-syslog-5424</id>
+      <name>palindromicity-simple-syslog-5424</name>
+      <url>https://api.bintray.com/maven/palindromicity/simple-syslog-5424/;publish=0</url>
+    </repository>
+  </distributionManagement>
   <dependencies>
     <dependency>
       <groupId>org.antlr</groupId>
@@ -108,6 +121,46 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <useReleaseProfile>false</useReleaseProfile>
+          <releaseProfiles>release</releaseProfiles>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
