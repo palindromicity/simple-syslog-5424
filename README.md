@@ -152,3 +152,12 @@ For example you would build a 'parser' that used your implementations, most like
   </repository>
 </repositories>
 ```
+
+```xml
+<dependency>
+  <groupId>com.github.palindromicity</groupId>
+  <artifactId>simple-syslog-5424</artifactId>
+  <version>0.0.2</version>
+  <type>pom</type>
+</dependency>
+```
