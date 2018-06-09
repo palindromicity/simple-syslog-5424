@@ -42,7 +42,7 @@
     <repository>
       <id>bintray-palindromicity-simple-syslog-5424</id>
       <name>palindromicity-simple-syslog-5424</name>
-      <url>https://api.bintray.com/maven/palindromicity/simple-syslog-5424/[PACKAGE_NAME]/;publish=1</url>
+      <url>https://api.bintray.com/maven/palindromicity/simple-syslog-5424/simple-syslog-5424/;publish=1</url>
     </repository>
   </distributionManagement>
   <dependencies>
