@@ -31,11 +31,18 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <global_antlr_version>4.5</global_antlr_version>
   </properties>
-  <distributionManagement>
+  <!--<distributionManagement>
     <repository>
       <id>bintray-palindromicity-simple-syslog-5424</id>
       <name>palindromicity-simple-syslog-5424</name>
       <url>https://api.bintray.com/maven/palindromicity/simple-syslog-5424/;publish=0</url>
+    </repository>
+  </distributionManagement>-->
+  <distributionManagement>
+    <repository>
+      <id>bintray-palindromicity-simple-syslog-5424</id>
+      <name>palindromicity-simple-syslog-5424</name>
+      <url>https://api.bintray.com/maven/palindromicity/simple-syslog-5424/[PACKAGE_NAME]/;publish=1</url>
     </repository>
   </distributionManagement>
   <dependencies>
