@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import com.github.palindromicity.syslog.dsl.DefaultErrorListener;
 import com.github.palindromicity.syslog.dsl.Syslog5424Listener;
 import com.github.palindromicity.syslog.dsl.generated.Rfc5424Lexer;
 import com.github.palindromicity.syslog.dsl.generated.Rfc5424Parser;
@@ -52,9 +53,13 @@ class Rfc5424SyslogParser implements SyslogParser {
   public Map<String, Object> parseLine(String syslogLine) {
     Validate.notBlank(syslogLine, "syslogLine");
     Rfc5424Lexer lexer = new Rfc5424Lexer(new ANTLRInputStream(syslogLine));
+    lexer.removeErrorListeners();
+    lexer.addErrorListener(new DefaultErrorListener());
     Rfc5424Parser parser = new Rfc5424Parser(new CommonTokenStream(lexer));
     Syslog5424Listener listener = new Syslog5424Listener(keyProvider, nilPolicy);
     parser.addParseListener(listener);
+    parser.removeErrorListeners();
+    parser.addErrorListener(new DefaultErrorListener());
     Rfc5424Parser.Syslog_msgContext ctx = parser.syslog_msg();
     return listener.getMsgMap();
   }

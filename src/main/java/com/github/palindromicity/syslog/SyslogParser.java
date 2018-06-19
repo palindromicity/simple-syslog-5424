@@ -15,6 +15,7 @@ public interface SyslogParser {
    *
    * @param line the line of Syslog to parse
    * @return a {@code Map}
+   * @throws com.github.palindromicity.syslog.dsl.ParseException if there is an error parsing
    */
   Map<String, Object> parseLine(String line);
 
@@ -23,6 +24,7 @@ public interface SyslogParser {
    *
    * @param line the line of Syslog to parser
    * @param consumer the {@code Consumer}
+   * @throws com.github.palindromicity.syslog.dsl.ParseException if there is an error parsing
    */
   void parseLine(String line, Consumer<Map<String, Object>> consumer);
 
@@ -31,6 +33,7 @@ public interface SyslogParser {
    *
    * @param reader {@code Reader} used.  It is not closed in this method.
    * @return {@code List} of {@code Map}
+   * @throws com.github.palindromicity.syslog.dsl.ParseException if there is an error parsing
    */
   List<Map<String, Object>> parseLines(Reader reader);
 
@@ -40,6 +43,7 @@ public interface SyslogParser {
    *
    * @param reader {@code Reader} used.  It is not closed in this method.
    * @param consumer the {@code Consumer}
+   * @throws com.github.palindromicity.syslog.dsl.ParseException if there is an error parsing
    */
   void parseLines(Reader reader, Consumer<Map<String, Object>> consumer);
 }
