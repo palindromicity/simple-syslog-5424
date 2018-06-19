@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.github.palindromicity.syslog.dsl.ParseException;
 import com.github.palindromicity.syslog.dsl.SyslogFieldKeys;
 import com.github.palindromicity.syslog.util.StructuredDataUtil;
 import org.junit.Assert;
@@ -112,6 +113,20 @@ public class Rfc5424SyslogParserTest extends AbstractRfc5425SyslogParserTest {
   }
 
   @Test
+  public void testParseLinesWithDashDefaultPolicy() throws Exception {
+    SyslogParser parser = new SyslogParserBuilder().build();
+    List<Map<String, Object>> mapList = handleFile("src/test/resources/log.txt", parser);
+    Assert.assertEquals(1, mapList.size());
+  }
+
+  @Test
+  public void testParseLinesWithDashDashPolicy() throws Exception {
+    SyslogParser parser = new SyslogParserBuilder().withNilPolicy(NilPolicy.DASH).build();
+    List<Map<String, Object>> mapList = handleFile("src/test/resources/log.txt", parser);
+    Assert.assertEquals(1, mapList.size());
+  }
+
+  @Test
   public void testParseLinesMix() throws Exception {
     SyslogParser parser = new SyslogParserBuilder().build();
     List<Map<String, Object>> mapList = handleFile("src/test/resources/log_mix.txt", parser);
@@ -140,4 +155,19 @@ public class Rfc5424SyslogParserTest extends AbstractRfc5425SyslogParserTest {
     Assert.assertEquals(count.get(), 3);
   }
 
+  @Test(expected = ParseException.class)
+  @SuppressWarnings("unchecked")
+  public void testInvalidLine() throws Exception {
+    SyslogParser parser = new SyslogParserBuilder().build();
+    Map<String, Object> map = handleLine("10 Oct 13 14:14:43 localhost some body of the message", parser);
+  }
+
+  @Test(expected = ParseException.class)
+  @SuppressWarnings("unchecked")
+  public void testInvalidLineConsumer() throws Exception {
+    SyslogParser parser = new SyslogParserBuilder().build();
+    handleLine("10 Oct 13 14:14:43 localhost some body of the message", parser, (map) -> {
+      Assert.fail();
+    });
+  }
 }
