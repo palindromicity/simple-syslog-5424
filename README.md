@@ -66,18 +66,21 @@ A `KeyProvider` is used to provide the map keys for the Syslog data.
 The default `KeyProvider` : `DefaultKeyProvider` provides keys using the `SyslogKeys`:
 
 ```java
-  MESSAGE("syslog.message"),
-  HEADER_APPNAME("syslog.header.appName"),
-  HEADER_HOSTNAME("syslog.header.hostName"),
-  HEADER_PRI("syslog.header.pri"),
-  HEADER_PROCID("syslog.header.procId"),
-  HEADER_TIMESTAMP("syslog.header.timestamp"),
-  HEADER_MSGID("syslog.header.msgId"),
-  HEADER_VERSION("syslog.header.version"),
-  STRUCTURED_BASE("syslog.structuredData."),
-  STRUCTURED_ELEMENT_ID_FMT("syslog.structuredData.%s"),
-  STRUCTURED_ELEMENT_ID_PNAME_FMT("syslog.structuredData.%s.%s"),
-  STRUCTURED_ELEMENT_ID_PNAME_PATTERN("syslog.structuredData\\.(.*)\\.(.*)$");
+ MESSAGE("syslog.message"),
+   HEADER_APPNAME("syslog.header.appName"),
+   HEADER_HOSTNAME("syslog.header.hostName"),
+   HEADER_PRI("syslog.header.pri"),
+   HEADER_PRI_SEVERITY("syslog.header.severity"),
+   HEADER_PRI_FACILITY("syslog.header.facility"),
+   HEADER_PROCID("syslog.header.procId"),
+   HEADER_TIMESTAMP("syslog.header.timestamp"),
+   HEADER_MSGID("syslog.header.msgId"),
+   HEADER_VERSION("syslog.header.version"),
+   STRUCTURED_BASE("syslog.structuredData."),
+   STRUCTURED_ELEMENT_ID_FMT("syslog.structuredData.%s"),
+   STRUCTURED_ELEMENT_ID_PNAME_FMT("syslog.structuredData.%s.%s"),
+   STRUCTURED_ELEMENT_ID_PNAME_PATTERN("syslog.structuredData\\.(.*)\\.(.*)$");
+
 ```
 
 A custom `KeyProvider` can be supplied to the `SyslogParserBuilder` if there is a different key strategy required.

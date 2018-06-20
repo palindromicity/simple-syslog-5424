@@ -49,6 +49,18 @@ public interface KeyProvider {
   String getHeaderPriority();
 
   /**
+   * Provides the key name for the Severity from the HEADER PRI @see <a href="https://tools.ietf.org/html/rfc5424#section-6.2.1">Section 6.2.1</a>.
+   * @return PRI key name
+   */
+  String getHeaderSeverity();
+
+  /**
+   * Provides the key name for the Facility from the HEADER PRI @see <a href="https://tools.ietf.org/html/rfc5424#section-6.2.1">Section 6.2.1</a>.
+   * @return PRI key name
+   */
+  String getHeaderFacility();
+
+  /**
    * Provides the key name for the HEADER PROCID @see <a href="https://tools.ietf.org/html/rfc5424#section-6.2.6">Section 6.2.6</a>.
    * @return PROCID key name
    */
