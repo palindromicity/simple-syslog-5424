@@ -37,6 +37,8 @@ public class Rfc5424SyslogParserTest extends AbstractRfc5425SyslogParserTest {
   private static final String expectedAppName = "d0602076-b14a-4c55-852a-981e7afeed38";
   private static final String expectedHostName = "loggregator";
   private static final String expectedPri = "14";
+  private static final String expectedFacility = "1";
+  private static final String expectedSeverity = "6";
   private static final String expectedProcId = "DEA";
   private static final String expectedTimestamp = "2014-06-20T09:14:07+00:00";
   private static final String expectedMessageId = "MSG-01";
@@ -58,6 +60,8 @@ public class Rfc5424SyslogParserTest extends AbstractRfc5425SyslogParserTest {
     Assert.assertEquals(expectedAppName, map.get(SyslogFieldKeys.HEADER_APPNAME.getField()));
     Assert.assertEquals(expectedHostName, map.get(SyslogFieldKeys.HEADER_HOSTNAME.getField()));
     Assert.assertEquals(expectedPri, map.get(SyslogFieldKeys.HEADER_PRI.getField()));
+    Assert.assertEquals(expectedSeverity, map.get(SyslogFieldKeys.HEADER_PRI_SEVERITY.getField()));
+    Assert.assertEquals(expectedFacility, map.get(SyslogFieldKeys.HEADER_PRI_FACILITY.getField()));
     Assert.assertEquals(expectedProcId, map.get(SyslogFieldKeys.HEADER_PROCID.getField()));
     Assert.assertEquals(expectedTimestamp, map.get(SyslogFieldKeys.HEADER_TIMESTAMP.getField()));
     Assert.assertEquals(expectedMessageId, map.get(SyslogFieldKeys.HEADER_MSGID.getField()));
@@ -94,6 +98,8 @@ public class Rfc5424SyslogParserTest extends AbstractRfc5425SyslogParserTest {
       Assert.assertEquals(expectedAppName, map.get(SyslogFieldKeys.HEADER_APPNAME.getField()));
       Assert.assertEquals(expectedHostName, map.get(SyslogFieldKeys.HEADER_HOSTNAME.getField()));
       Assert.assertEquals(expectedPri, map.get(SyslogFieldKeys.HEADER_PRI.getField()));
+      Assert.assertEquals(expectedSeverity, map.get(SyslogFieldKeys.HEADER_PRI_SEVERITY.getField()));
+      Assert.assertEquals(expectedFacility, map.get(SyslogFieldKeys.HEADER_PRI_FACILITY.getField()));
       Assert.assertEquals(expectedProcId, map.get(SyslogFieldKeys.HEADER_PROCID.getField()));
       Assert.assertEquals(expectedTimestamp, map.get(SyslogFieldKeys.HEADER_TIMESTAMP.getField()));
       Assert.assertEquals(expectedMessageId, map.get(SyslogFieldKeys.HEADER_MSGID.getField()));

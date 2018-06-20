@@ -8,6 +8,8 @@ public enum SyslogFieldKeys {
   HEADER_APPNAME("syslog.header.appName"),
   HEADER_HOSTNAME("syslog.header.hostName"),
   HEADER_PRI("syslog.header.pri"),
+  HEADER_PRI_SEVERITY("syslog.header.severity"),
+  HEADER_PRI_FACILITY("syslog.header.facility"),
   HEADER_PROCID("syslog.header.procId"),
   HEADER_TIMESTAMP("syslog.header.timestamp"),
   HEADER_MSGID("syslog.header.msgId"),

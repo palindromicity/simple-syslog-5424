@@ -55,7 +55,7 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
    *
    * @param keyProvider {@link KeyProvider} used for map insertion.
    * @param nilPolicy {@link NilPolicy} used for handling nil values.
-   */
+   e*/
   public Syslog5424Listener(KeyProvider keyProvider, NilPolicy nilPolicy) {
     Validate.notNull(keyProvider,"keyProvider");
     this.keyProvider = keyProvider;
@@ -77,7 +77,13 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
 
   @Override
   public void exitHeaderPriorityValue(Rfc5424Parser.HeaderPriorityValueContext ctx) {
-    msgMap.put(keyProvider.getHeaderPriority(), ctx.getText());
+    String priority = ctx.getText();
+    msgMap.put(keyProvider.getHeaderPriority(), priority);
+    int pri = Integer.parseInt(priority);
+    int sev = pri % 8;
+    int facility = pri / 8;
+    msgMap.put(keyProvider.getHeaderSeverity(),String.valueOf(sev));
+    msgMap.put(keyProvider.getHeaderFacility(),String.valueOf(facility));
   }
 
   @Override

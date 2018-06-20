@@ -36,6 +36,16 @@ public class DefaultKeyProvider implements KeyProvider {
   }
 
   @Override
+  public String getHeaderSeverity() {
+    return SyslogFieldKeys.HEADER_PRI_SEVERITY.getField();
+  }
+
+  @Override
+  public String getHeaderFacility() {
+    return SyslogFieldKeys.HEADER_PRI_FACILITY.getField();
+  }
+
+  @Override
   public String getHeaderProcessId() {
     return SyslogFieldKeys.HEADER_PROCID.getField();
   }

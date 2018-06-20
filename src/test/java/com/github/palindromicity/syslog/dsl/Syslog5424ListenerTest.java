@@ -38,6 +38,8 @@ public class Syslog5424ListenerTest {
   private static final String expectedProcId = "DEA";
   private static final String expectedTimestamp = "2014-06-20T09:14:07+00:00";
   private static final String expectedMessageId = "MSG-01";
+  private static final String expectedFacility = "1";
+  private static final String expectedSeverity = "6";
 
   private static final String expectedIUT1 = "3";
   private static final String expectedIUT2 = "4";
@@ -55,6 +57,8 @@ public class Syslog5424ListenerTest {
     Assert.assertEquals(expectedAppName, map.get(SyslogFieldKeys.HEADER_APPNAME.getField()));
     Assert.assertEquals(expectedHostName, map.get(SyslogFieldKeys.HEADER_HOSTNAME.getField()));
     Assert.assertEquals(expectedPri, map.get(SyslogFieldKeys.HEADER_PRI.getField()));
+    Assert.assertEquals(expectedSeverity, map.get(SyslogFieldKeys.HEADER_PRI_SEVERITY.getField()));
+    Assert.assertEquals(expectedFacility, map.get(SyslogFieldKeys.HEADER_PRI_FACILITY.getField()));
     Assert.assertEquals(expectedProcId, map.get(SyslogFieldKeys.HEADER_PROCID.getField()));
     Assert.assertEquals(expectedTimestamp, map.get(SyslogFieldKeys.HEADER_TIMESTAMP.getField()));
     Assert.assertEquals(expectedMessageId, map.get(SyslogFieldKeys.HEADER_MSGID.getField()));
@@ -89,6 +93,8 @@ public class Syslog5424ListenerTest {
     Assert.assertEquals(expectedAppName, map.get(SyslogFieldKeys.HEADER_APPNAME.getField()));
     Assert.assertEquals(expectedHostName, map.get(SyslogFieldKeys.HEADER_HOSTNAME.getField()));
     Assert.assertEquals(expectedPri, map.get(SyslogFieldKeys.HEADER_PRI.getField()));
+    Assert.assertEquals(expectedSeverity, map.get(SyslogFieldKeys.HEADER_PRI_SEVERITY.getField()));
+    Assert.assertEquals(expectedFacility, map.get(SyslogFieldKeys.HEADER_PRI_FACILITY.getField()));
     Assert.assertEquals(expectedProcId, map.get(SyslogFieldKeys.HEADER_PROCID.getField()));
     Assert.assertEquals(expectedTimestamp, map.get(SyslogFieldKeys.HEADER_TIMESTAMP.getField()));
     Assert.assertFalse(map.containsKey(SyslogFieldKeys.HEADER_MSGID.getField()));
@@ -122,6 +128,8 @@ public class Syslog5424ListenerTest {
     Assert.assertEquals(expectedAppName, map.get(SyslogFieldKeys.HEADER_APPNAME.getField()));
     Assert.assertEquals(expectedHostName, map.get(SyslogFieldKeys.HEADER_HOSTNAME.getField()));
     Assert.assertEquals(expectedPri, map.get(SyslogFieldKeys.HEADER_PRI.getField()));
+    Assert.assertEquals(expectedSeverity, map.get(SyslogFieldKeys.HEADER_PRI_SEVERITY.getField()));
+    Assert.assertEquals(expectedFacility, map.get(SyslogFieldKeys.HEADER_PRI_FACILITY.getField()));
     Assert.assertEquals(expectedProcId, map.get(SyslogFieldKeys.HEADER_PROCID.getField()));
     Assert.assertEquals(expectedTimestamp, map.get(SyslogFieldKeys.HEADER_TIMESTAMP.getField()));
     Assert.assertNull(map.get(SyslogFieldKeys.HEADER_MSGID.getField()));
@@ -155,6 +163,8 @@ public class Syslog5424ListenerTest {
     Assert.assertEquals(expectedAppName, map.get(SyslogFieldKeys.HEADER_APPNAME.getField()));
     Assert.assertEquals(expectedHostName, map.get(SyslogFieldKeys.HEADER_HOSTNAME.getField()));
     Assert.assertEquals(expectedPri, map.get(SyslogFieldKeys.HEADER_PRI.getField()));
+    Assert.assertEquals(expectedSeverity, map.get(SyslogFieldKeys.HEADER_PRI_SEVERITY.getField()));
+    Assert.assertEquals(expectedFacility, map.get(SyslogFieldKeys.HEADER_PRI_FACILITY.getField()));
     Assert.assertEquals(expectedProcId, map.get(SyslogFieldKeys.HEADER_PROCID.getField()));
     Assert.assertEquals(expectedTimestamp, map.get(SyslogFieldKeys.HEADER_TIMESTAMP.getField()));
     Assert.assertEquals("-",map.get(SyslogFieldKeys.HEADER_MSGID.getField()));
@@ -188,6 +198,8 @@ public class Syslog5424ListenerTest {
     Assert.assertEquals(expectedAppName, map.get(SyslogFieldKeys.HEADER_APPNAME.getField()));
     Assert.assertEquals(expectedHostName, map.get(SyslogFieldKeys.HEADER_HOSTNAME.getField()));
     Assert.assertEquals(expectedPri, map.get(SyslogFieldKeys.HEADER_PRI.getField()));
+    Assert.assertEquals(expectedSeverity, map.get(SyslogFieldKeys.HEADER_PRI_SEVERITY.getField()));
+    Assert.assertEquals(expectedFacility, map.get(SyslogFieldKeys.HEADER_PRI_FACILITY.getField()));
     Assert.assertEquals(expectedProcId, map.get(SyslogFieldKeys.HEADER_PROCID.getField()));
     Assert.assertEquals(expectedTimestamp, map.get(SyslogFieldKeys.HEADER_TIMESTAMP.getField()));
     Assert.assertFalse(map.containsKey(SyslogFieldKeys.HEADER_MSGID.getField()));
