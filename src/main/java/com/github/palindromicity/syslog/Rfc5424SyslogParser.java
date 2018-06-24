@@ -46,6 +46,7 @@ class Rfc5424SyslogParser implements SyslogParser {
    * {@link NilPolicy} for the {@link Syslog5424Listener}.
    */
   private NilPolicy nilPolicy = NilPolicy.OMIT;
+  private StructuredDataPolicy structuredDataPolicy = StructuredDataPolicy.FLATTEN;
 
   /**
    * Create a new {@code Rfc5424SyslogParser}.
@@ -54,14 +55,17 @@ class Rfc5424SyslogParser implements SyslogParser {
    * {@link Syslog5424Listener}.
    */
   Rfc5424SyslogParser(KeyProvider keyProvider ) {
-    this(keyProvider, null);
+    this(keyProvider, null, null);
   }
 
-  Rfc5424SyslogParser(KeyProvider keyProvider, NilPolicy nilPolicy) {
+  Rfc5424SyslogParser(KeyProvider keyProvider, NilPolicy nilPolicy, StructuredDataPolicy structuredDataPolicy) {
     Validate.notNull(keyProvider, "keyProvider");
     this.keyProvider = keyProvider;
     if (nilPolicy != null) {
       this.nilPolicy = nilPolicy;
+    }
+    if (structuredDataPolicy != null) {
+      this.structuredDataPolicy = structuredDataPolicy;
     }
   }
 
@@ -72,7 +76,7 @@ class Rfc5424SyslogParser implements SyslogParser {
     lexer.removeErrorListeners();
     lexer.addErrorListener(new DefaultErrorListener());
     Rfc5424Parser parser = new Rfc5424Parser(new CommonTokenStream(lexer));
-    Syslog5424Listener listener = new Syslog5424Listener(keyProvider, nilPolicy);
+    Syslog5424Listener listener = new Syslog5424Listener(keyProvider, nilPolicy, structuredDataPolicy);
     parser.addParseListener(listener);
     parser.removeErrorListeners();
     parser.addErrorListener(new DefaultErrorListener());

@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.github.palindromicity.syslog.DefaultKeyProvider;
 import com.github.palindromicity.syslog.NilPolicy;
+import com.github.palindromicity.syslog.StructuredDataPolicy;
 import com.github.palindromicity.syslog.dsl.generated.Rfc5424Lexer;
 import com.github.palindromicity.syslog.dsl.generated.Rfc5424Parser;
 import com.github.palindromicity.syslog.util.StructuredDataUtil;
@@ -65,6 +66,44 @@ public class Syslog5424ListenerTest {
 
     // structured data
     Map<String, Object> structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultKeyProvider());
+    Assert.assertTrue(structured.containsKey("exampleSDID@32473"));
+    Map<String, Object> example1 = (Map<String, Object>) structured.get("exampleSDID@32473");
+    Assert.assertTrue(example1.containsKey("iut"));
+    Assert.assertTrue(example1.containsKey("eventSource"));
+    Assert.assertTrue(example1.containsKey("eventID"));
+    Assert.assertEquals(expectedIUT1, example1.get("iut").toString());
+    Assert.assertEquals(expectedEventSource1, example1.get("eventSource").toString());
+    Assert.assertEquals(expectedEventID1, example1.get("eventID").toString());
+
+    Assert.assertTrue(structured.containsKey("exampleSDID@32480"));
+    Map<String, Object> example2 = (Map<String, Object>) structured.get("exampleSDID@32480");
+    Assert.assertTrue(example2.containsKey("iut"));
+    Assert.assertTrue(example2.containsKey("eventSource"));
+    Assert.assertTrue(example2.containsKey("eventID"));
+    Assert.assertEquals(expectedIUT2, example2.get("iut").toString());
+    Assert.assertEquals(expectedEventSource2, example2.get("eventSource").toString());
+    Assert.assertEquals(expectedEventID2, example2.get("eventID").toString());
+
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testAllPresentMappedStructuredData() throws Exception {
+    Map<String, Object> map = handleFile("src/test/resources/log_all.txt", NilPolicy.OMIT,
+        StructuredDataPolicy.MAP_OF_MAPS);
+    Assert.assertEquals(expectedVersion, map.get(SyslogFieldKeys.HEADER_VERSION.getField()));
+    Assert.assertEquals(expectedMessage, map.get(SyslogFieldKeys.MESSAGE.getField()));
+    Assert.assertEquals(expectedAppName, map.get(SyslogFieldKeys.HEADER_APPNAME.getField()));
+    Assert.assertEquals(expectedHostName, map.get(SyslogFieldKeys.HEADER_HOSTNAME.getField()));
+    Assert.assertEquals(expectedPri, map.get(SyslogFieldKeys.HEADER_PRI.getField()));
+    Assert.assertEquals(expectedSeverity, map.get(SyslogFieldKeys.HEADER_PRI_SEVERITY.getField()));
+    Assert.assertEquals(expectedFacility, map.get(SyslogFieldKeys.HEADER_PRI_FACILITY.getField()));
+    Assert.assertEquals(expectedProcId, map.get(SyslogFieldKeys.HEADER_PROCID.getField()));
+    Assert.assertEquals(expectedTimestamp, map.get(SyslogFieldKeys.HEADER_TIMESTAMP.getField()));
+    Assert.assertEquals(expectedMessageId, map.get(SyslogFieldKeys.HEADER_MSGID.getField()));
+
+    // structured data
+    Map<String, Object> structured = (Map<String, Object>) map.get("structuredData");
     Assert.assertTrue(structured.containsKey("exampleSDID@32473"));
     Map<String, Object> example1 = (Map<String, Object>) structured.get("exampleSDID@32473");
     Assert.assertTrue(example1.containsKey("iut"));
@@ -167,7 +206,7 @@ public class Syslog5424ListenerTest {
     Assert.assertEquals(expectedFacility, map.get(SyslogFieldKeys.HEADER_PRI_FACILITY.getField()));
     Assert.assertEquals(expectedProcId, map.get(SyslogFieldKeys.HEADER_PROCID.getField()));
     Assert.assertEquals(expectedTimestamp, map.get(SyslogFieldKeys.HEADER_TIMESTAMP.getField()));
-    Assert.assertEquals("-",map.get(SyslogFieldKeys.HEADER_MSGID.getField()));
+    Assert.assertEquals("-", map.get(SyslogFieldKeys.HEADER_MSGID.getField()));
 
     // structured data
     Map<String, Object> structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultKeyProvider());
@@ -216,9 +255,14 @@ public class Syslog5424ListenerTest {
   }
 
   private static Map<String, Object> handleFile(String fileName, NilPolicy nilPolicy) throws Exception {
+    return handleFile(fileName, nilPolicy, StructuredDataPolicy.FLATTEN);
+  }
+
+  private static Map<String, Object> handleFile(String fileName, NilPolicy nilPolicy,
+      StructuredDataPolicy structuredDataPolicy) throws Exception {
     Rfc5424Lexer lexer = new Rfc5424Lexer(new ANTLRFileStream(fileName));
     Rfc5424Parser parser = new Rfc5424Parser(new CommonTokenStream(lexer));
-    Syslog5424Listener listener = new Syslog5424Listener(new DefaultKeyProvider(),nilPolicy);
+    Syslog5424Listener listener = new Syslog5424Listener(new DefaultKeyProvider(), nilPolicy, structuredDataPolicy);
     parser.addParseListener(listener);
     Rfc5424Parser.Syslog_msgContext ctx = parser.syslog_msg();
     return listener.getMsgMap();

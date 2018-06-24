@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 
 import com.github.palindromicity.syslog.KeyProvider;
 import com.github.palindromicity.syslog.NilPolicy;
+import com.github.palindromicity.syslog.StructuredDataPolicy;
 import com.github.palindromicity.syslog.dsl.generated.Rfc5424BaseListener;
 import com.github.palindromicity.syslog.dsl.generated.Rfc5424Listener;
 import com.github.palindromicity.syslog.dsl.generated.Rfc5424Parser;
@@ -37,6 +38,11 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
   private NilPolicy nilPolicy = NilPolicy.OMIT;
 
   /**
+   * {@link StructuredDataPolicy} for parsing.
+   */
+  private StructuredDataPolicy structuredDataPolicy = StructuredDataPolicy.FLATTEN;
+
+  /**
    * The {@code Map} used to store our syslog values.
    */
   private final Map<String, Object> msgMap = new HashMap<>();
@@ -47,7 +53,7 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
    * @param keyProvider {@link KeyProvider} used for map insertion.
    */
   public Syslog5424Listener(KeyProvider keyProvider) {
-    this(keyProvider, null);
+    this(keyProvider, null, null);
   }
 
   /**
@@ -55,12 +61,16 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
    *
    * @param keyProvider {@link KeyProvider} used for map insertion.
    * @param nilPolicy {@link NilPolicy} used for handling nil values.
-   e*/
-  public Syslog5424Listener(KeyProvider keyProvider, NilPolicy nilPolicy) {
-    Validate.notNull(keyProvider,"keyProvider");
+   * @param structuredDataPolicy {@link StructuredDataPolicy} used for handling Structured Data output.
+   */
+  public Syslog5424Listener(KeyProvider keyProvider, NilPolicy nilPolicy, StructuredDataPolicy structuredDataPolicy) {
+    Validate.notNull(keyProvider, "keyProvider");
     this.keyProvider = keyProvider;
     if (nilPolicy != null) {
       this.nilPolicy = nilPolicy;
+    }
+    if (structuredDataPolicy != null) {
+      this.structuredDataPolicy = structuredDataPolicy;
     }
   }
 
@@ -82,8 +92,8 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
     int pri = Integer.parseInt(priority);
     int sev = pri % 8;
     int facility = pri / 8;
-    msgMap.put(keyProvider.getHeaderSeverity(),String.valueOf(sev));
-    msgMap.put(keyProvider.getHeaderFacility(),String.valueOf(facility));
+    msgMap.put(keyProvider.getHeaderSeverity(), String.valueOf(sev));
+    msgMap.put(keyProvider.getHeaderFacility(), String.valueOf(facility));
   }
 
   @Override
@@ -155,16 +165,28 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void exitSdElement(Rfc5424Parser.SdElementContext ctx) {
     String id = ctx.sd_id().getText();
-    for (Rfc5424Parser.Sd_paramContext paramContext : ctx.sd_param()) {
-      msgMap.put(String.format(keyProvider.getStructuredElementIdParamNameFormat(), (id),
-          ((Rfc5424Parser.SdParamContext) paramContext).param_name()
-              .getText()),
-          ((Rfc5424Parser.SdParamContext) paramContext).param_value().getText());
-    }
+    if (structuredDataPolicy == StructuredDataPolicy.FLATTEN) {
+      for (Rfc5424Parser.Sd_paramContext paramContext : ctx.sd_param()) {
+        msgMap.put(String.format(keyProvider.getStructuredElementIdParamNameFormat(), (id),
+            ((Rfc5424Parser.SdParamContext) paramContext).param_name()
+                .getText()),
+            ((Rfc5424Parser.SdParamContext) paramContext).param_value().getText());
 
+      }
+    } else if (structuredDataPolicy == StructuredDataPolicy.MAP_OF_MAPS) {
+      msgMap.putIfAbsent("structuredData", new HashMap<String, Object>());
+      Map<String, Object> paramMap = new HashMap<>();
+      for (Rfc5424Parser.Sd_paramContext paramContext : ctx.sd_param()) {
+        paramMap.put(((Rfc5424Parser.SdParamContext) paramContext).param_name()
+                .getText(),
+            ((Rfc5424Parser.SdParamContext) paramContext).param_value().getText());
+      }
+      ((Map<String, Object>) msgMap.get("structuredData")).put(id, paramMap);
+    }
   }
 
   @Override
@@ -179,9 +201,9 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
 
   private void handleNil(Supplier<String> supplier) {
     if (nilPolicy == NilPolicy.DASH) {
-      msgMap.put(supplier.get(),DASH);
+      msgMap.put(supplier.get(), DASH);
     } else if (nilPolicy == NilPolicy.NULL) {
-      msgMap.put(supplier.get(),null);
+      msgMap.put(supplier.get(), null);
     }
   }
 }
