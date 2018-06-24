@@ -14,7 +14,7 @@ public enum SyslogFieldKeys {
   HEADER_TIMESTAMP("syslog.header.timestamp"),
   HEADER_MSGID("syslog.header.msgId"),
   HEADER_VERSION("syslog.header.version"),
-  STRUCTURED_BASE("syslog.structuredData."),
+  STRUCTURED_BASE("syslog.structuredData"),
   STRUCTURED_ELEMENT_ID_FMT("syslog.structuredData.%s"),
   STRUCTURED_ELEMENT_ID_PNAME_FMT("syslog.structuredData.%s.%s"),
   STRUCTURED_ELEMENT_ID_PNAME_PATTERN("syslog.structuredData\\.(.*)\\.(.*)$");

@@ -178,14 +178,14 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
 
       }
     } else if (structuredDataPolicy == StructuredDataPolicy.MAP_OF_MAPS) {
-      msgMap.putIfAbsent("structuredData", new HashMap<String, Object>());
+      msgMap.putIfAbsent(keyProvider.getStructuredBase(), new HashMap<String, Object>());
       Map<String, Object> paramMap = new HashMap<>();
       for (Rfc5424Parser.Sd_paramContext paramContext : ctx.sd_param()) {
         paramMap.put(((Rfc5424Parser.SdParamContext) paramContext).param_name()
                 .getText(),
             ((Rfc5424Parser.SdParamContext) paramContext).param_value().getText());
       }
-      ((Map<String, Object>) msgMap.get("structuredData")).put(id, paramMap);
+      ((Map<String, Object>) msgMap.get(keyProvider.getStructuredBase())).put(id, paramMap);
     }
   }
 
