@@ -103,7 +103,7 @@ public class Syslog5424ListenerTest {
     Assert.assertEquals(expectedMessageId, map.get(SyslogFieldKeys.HEADER_MSGID.getField()));
 
     // structured data
-    Map<String, Object> structured = (Map<String, Object>) map.get("structuredData");
+    Map<String, Object> structured = (Map<String, Object>) map.get(SyslogFieldKeys.STRUCTURED_BASE.getField());
     Assert.assertTrue(structured.containsKey("exampleSDID@32473"));
     Map<String, Object> example1 = (Map<String, Object>) structured.get("exampleSDID@32473");
     Assert.assertTrue(example1.containsKey("iut"));
