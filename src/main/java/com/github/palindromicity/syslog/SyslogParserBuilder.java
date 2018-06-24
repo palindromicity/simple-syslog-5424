@@ -40,6 +40,12 @@ public class SyslogParserBuilder {
   private NilPolicy nilPolicy = NilPolicy.OMIT;
 
   /**
+   * The {@link StructuredDataPolicy}.
+   * Defaults to {@link StructuredDataPolicy#FLATTEN}
+   */
+  private StructuredDataPolicy structuredDataPolicy = StructuredDataPolicy.FLATTEN;
+
+  /**
    * Add a {@link SyslogSpecification} to the builder.
    * @param specification the specification
    * @return {@code SyslogParserBuilder}
@@ -69,6 +75,11 @@ public class SyslogParserBuilder {
     return this;
   }
 
+  public SyslogParserBuilder withStructuredDataPolicy(StructuredDataPolicy structuredDataPolicy) {
+    this.structuredDataPolicy = structuredDataPolicy;
+    return this;
+  }
+
   /**
    * Builds a new {@link SyslogParser} instance using options if provided.
    * @return {@link SyslogParser}
@@ -76,7 +87,7 @@ public class SyslogParserBuilder {
    */
   public SyslogParser build() {
     if (specification == SyslogSpecification.RFC_5424) {
-      return new Rfc5424SyslogParser(keyProvider, nilPolicy);
+      return new Rfc5424SyslogParser(keyProvider, nilPolicy, structuredDataPolicy);
     }
     throw new IllegalStateException("unknown SyslogSpecification " + specification.name());
   }
