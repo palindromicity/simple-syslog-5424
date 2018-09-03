@@ -3,7 +3,7 @@
 
   <groupId>com.github.palindromicity</groupId>
   <artifactId>simple-syslog-5424</artifactId>
-  <version>0.0.8-SNAPSHOT</version>
+  <version>0.0.8</version>
   <packaging>jar</packaging>
 
   <name>simple-syslog-5424</name>
@@ -15,7 +15,7 @@
     <connection>scm:git:https://github.com/palindromicity/simple-syslog-5424.git</connection>
     <developerConnection>scm:git:git@github.com:palindromicity/simple-syslog-5424.git</developerConnection>
     <url>https://github.com/palindromicity/simple-syslog-5424</url>
-    <tag>HEAD</tag>
+    <tag>simple-syslog-5424-0.0.8</tag>
   </scm>
   <prerequisites>
     <maven>${maven.min-version}</maven>
