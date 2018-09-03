@@ -53,12 +53,29 @@ Just pass a `Consumer` to the function.
 
 ### Options
 
-The `SyslogParserBuilder` supports options for changing the `SyslogSpecifictation` and the `KeyProvider`.
+The `SyslogParserBuilder` supports options for changing the `AllowableVariations`, the `SyslogSpecifictation` and the `KeyProvider`.
 
-##### SyslogSpecification
+##### AllowableDeviations
 
-This option is to support multiple possible parsing strategies or quirk modes.  Initially there is only one
-supported specification - `RFC_5424`.
+Allowable deviations from the RFC 5424 specification.  This allows for fields required by the specification, but perhaps
+omitted by convention to be missing, and a line that is by specificiation technically incorrect to still parse.
+
+This is specificed by an {@code EnumSet}
+
+```java
+/**
+   * Properly formed RFC 5424 Syslog.
+   */
+  NONE,
+  /**
+   * RFC 5424 Syslog that does not have PRIORITY.
+   */
+  PRIORITY,
+  /**
+   * RFC 5424 Syslog that does not have VERSION.
+   */
+  VERSION
+```
 
 ##### KeyProvider
 
@@ -160,7 +177,7 @@ For example you would build a 'parser' that used your implementations, most like
 <dependency>
   <groupId>com.github.palindromicity</groupId>
   <artifactId>simple-syslog-5424</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.8</version>
   <type>pom</type>
 </dependency>
 ```

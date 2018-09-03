@@ -1,10 +1,12 @@
 package com.github.palindromicity.syslog.dsl;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.github.palindromicity.syslog.AllowableDeviations;
 import com.github.palindromicity.syslog.KeyProvider;
 import com.github.palindromicity.syslog.NilPolicy;
 import com.github.palindromicity.syslog.StructuredDataPolicy;
@@ -43,6 +45,11 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
   private StructuredDataPolicy structuredDataPolicy = StructuredDataPolicy.FLATTEN;
 
   /**
+   * {@link AllowableDeviations} for parsing and errors.
+   */
+  private EnumSet<AllowableDeviations> deviations;
+
+  /**
    * The {@code Map} used to store our syslog values.
    */
   private final Map<String, Object> msgMap = new HashMap<>();
@@ -53,7 +60,7 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
    * @param keyProvider {@link KeyProvider} used for map insertion.
    */
   public Syslog5424Listener(KeyProvider keyProvider) {
-    this(keyProvider, null, null);
+    this(keyProvider, null, null, EnumSet.of(AllowableDeviations.NONE));
   }
 
   /**
@@ -64,6 +71,19 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
    * @param structuredDataPolicy {@link StructuredDataPolicy} used for handling Structured Data output.
    */
   public Syslog5424Listener(KeyProvider keyProvider, NilPolicy nilPolicy, StructuredDataPolicy structuredDataPolicy) {
+    this(keyProvider, nilPolicy, structuredDataPolicy, EnumSet.of(AllowableDeviations.NONE));
+  }
+
+  /**
+   * Create a new {@code Syslog5424Listener}.
+   *
+   * @param keyProvider {@link KeyProvider} used for map insertion.
+   * @param nilPolicy {@link NilPolicy} used for handling nil values.
+   * @param structuredDataPolicy {@link StructuredDataPolicy} used for handling Structured Data output.
+   * @param deviations {@link AllowableDeviations} used for handling abnormalities.
+   */
+  public Syslog5424Listener(KeyProvider keyProvider, NilPolicy nilPolicy, StructuredDataPolicy structuredDataPolicy,
+      EnumSet<AllowableDeviations> deviations) {
     Validate.notNull(keyProvider, "keyProvider");
     this.keyProvider = keyProvider;
     if (nilPolicy != null) {
@@ -72,6 +92,7 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
     if (structuredDataPolicy != null) {
       this.structuredDataPolicy = structuredDataPolicy;
     }
+    this.deviations = deviations;
   }
 
   /**
@@ -81,6 +102,12 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
    * @return unmodifiable {@code Map}
    */
   public Map<String, Object> getMsgMap() {
+    if (msgMap.get(keyProvider.getHeaderPriority()) == null && !deviations.contains(AllowableDeviations.PRIORITY)) {
+      throw new ParseException("Priority missing with strict parsing");
+    } else if (msgMap.get(keyProvider.getHeaderVersion()) == null && !deviations
+        .contains(AllowableDeviations.VERSION)) {
+      throw new ParseException("Version missing with strict parsing");
+    }
     return Collections.unmodifiableMap(msgMap);
   }
 

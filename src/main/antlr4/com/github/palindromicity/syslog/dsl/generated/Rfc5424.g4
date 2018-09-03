@@ -39,7 +39,7 @@ grammar Rfc5424;
 
  syslog_msg      : header sp structured_data (msg)? #syslogMsg;
 
- header          : pri version sp timestamp sp hostname sp app_name sp procid sp msgid #syslogHeader;
+ header          : pri? version? sp? timestamp sp hostname sp app_name sp procid sp msgid #syslogHeader;
 
  pri             : LESS_THAN prival GREATER_THAN #headerPriority
  ;

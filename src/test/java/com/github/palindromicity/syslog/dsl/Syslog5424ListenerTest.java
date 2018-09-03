@@ -16,8 +16,10 @@
 
 package com.github.palindromicity.syslog.dsl;
 
+import java.util.EnumSet;
 import java.util.Map;
 
+import com.github.palindromicity.syslog.AllowableDeviations;
 import com.github.palindromicity.syslog.DefaultKeyProvider;
 import com.github.palindromicity.syslog.NilPolicy;
 import com.github.palindromicity.syslog.StructuredDataPolicy;
@@ -84,6 +86,48 @@ public class Syslog5424ListenerTest {
     Assert.assertEquals(expectedEventSource2, example2.get("eventSource").toString());
     Assert.assertEquals(expectedEventID2, example2.get("eventID").toString());
 
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testAllPresentButPriority() throws Exception {
+    Map<String, Object> map = handleFile("src/test/resources/log_missing_pri.txt", NilPolicy.OMIT,
+        StructuredDataPolicy.FLATTEN, EnumSet.of(AllowableDeviations.PRIORITY));
+  }
+
+  @Test(expected = ParseException.class)
+  @SuppressWarnings("unchecked")
+  public void testAllPresentButPriorityNoDeviation() throws Exception {
+    Map<String, Object> map = handleFile("src/test/resources/log_missing_pri.txt", NilPolicy.OMIT,
+        StructuredDataPolicy.FLATTEN, EnumSet.of(AllowableDeviations.NONE));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testAllPresentButVersion() throws Exception {
+    Map<String, Object> map = handleFile("src/test/resources/log_missing_version.txt", NilPolicy.OMIT,
+        StructuredDataPolicy.FLATTEN, EnumSet.of(AllowableDeviations.VERSION));
+  }
+
+  @Test(expected = ParseException.class)
+  @SuppressWarnings("unchecked")
+  public void testAllPresentButVersionNoDeviation() throws Exception {
+    Map<String, Object> map = handleFile("src/test/resources/log_missing_version.txt", NilPolicy.OMIT,
+        StructuredDataPolicy.FLATTEN, EnumSet.of(AllowableDeviations.NONE));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testAllPresentButPriVersion() throws Exception {
+    Map<String, Object> map = handleFile("src/test/resources/log_missing_priversion.txt", NilPolicy.OMIT,
+        StructuredDataPolicy.FLATTEN, EnumSet.of(AllowableDeviations.PRIORITY, AllowableDeviations.VERSION));
+  }
+
+  @Test(expected = ParseException.class)
+  @SuppressWarnings("unchecked")
+  public void testAllPresentButPriVersionNoDeviation() throws Exception {
+    Map<String, Object> map = handleFile("src/test/resources/log_missing_priversion.txt", NilPolicy.OMIT,
+        StructuredDataPolicy.FLATTEN, EnumSet.of(AllowableDeviations.NONE));
   }
 
   @Test
@@ -255,14 +299,20 @@ public class Syslog5424ListenerTest {
   }
 
   private static Map<String, Object> handleFile(String fileName, NilPolicy nilPolicy) throws Exception {
-    return handleFile(fileName, nilPolicy, StructuredDataPolicy.FLATTEN);
+    return handleFile(fileName, nilPolicy, StructuredDataPolicy.FLATTEN, EnumSet.of(AllowableDeviations.NONE));
   }
 
   private static Map<String, Object> handleFile(String fileName, NilPolicy nilPolicy,
       StructuredDataPolicy structuredDataPolicy) throws Exception {
+    return handleFile(fileName, nilPolicy, structuredDataPolicy, EnumSet.of(AllowableDeviations.NONE));
+  }
+
+  private static Map<String, Object> handleFile(String fileName, NilPolicy nilPolicy,
+      StructuredDataPolicy structuredDataPolicy, EnumSet<AllowableDeviations> deviations) throws Exception {
     Rfc5424Lexer lexer = new Rfc5424Lexer(new ANTLRFileStream(fileName));
     Rfc5424Parser parser = new Rfc5424Parser(new CommonTokenStream(lexer));
-    Syslog5424Listener listener = new Syslog5424Listener(new DefaultKeyProvider(), nilPolicy, structuredDataPolicy);
+    Syslog5424Listener listener = new Syslog5424Listener(new DefaultKeyProvider(), nilPolicy, structuredDataPolicy,
+        deviations);
     parser.addParseListener(listener);
     Rfc5424Parser.Syslog_msgContext ctx = parser.syslog_msg();
     return listener.getMsgMap();
