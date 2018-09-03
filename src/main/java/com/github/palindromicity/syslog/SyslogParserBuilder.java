@@ -16,16 +16,18 @@
 
 package com.github.palindromicity.syslog;
 
+import java.util.EnumSet;
+
 /**
  * Builder for SyslogParser instances.
  */
 public class SyslogParserBuilder {
 
   /**
-   * The {@link com.github.palindromicity.syslog.SyslogSpecification}.
-   * Defaults to {@link com.github.palindromicity.syslog.SyslogSpecification#RFC_5424}
+   * The {@link AllowableDeviations}.
+   * Defaults to {@link AllowableDeviations#NONE}
    */
-  private SyslogSpecification specification = SyslogSpecification.RFC_5424;
+  private EnumSet<AllowableDeviations> deviations = EnumSet.of(AllowableDeviations.NONE);
 
   /**
    * The {@link KeyProvider}.
@@ -46,17 +48,19 @@ public class SyslogParserBuilder {
   private StructuredDataPolicy structuredDataPolicy = StructuredDataPolicy.FLATTEN;
 
   /**
-   * Add a {@link SyslogSpecification} to the builder.
-   * @param specification the specification
+   * Add a {@link AllowableDeviations} to the builder.
+   *
+   * @param specification the deviations
    * @return {@code SyslogParserBuilder}
    */
-  public SyslogParserBuilder forSpecification(final SyslogSpecification specification) {
-    this.specification = specification;
+  public SyslogParserBuilder withDeviations(final EnumSet<AllowableDeviations> specification) {
+    this.deviations = specification;
     return this;
   }
 
   /**
    * Add a {@link KeyProvider} to the builder.
+   *
    * @param keyProvider the {@link KeyProvider}
    * @return {@code SyslogParserBuilder}
    */
@@ -67,6 +71,7 @@ public class SyslogParserBuilder {
 
   /**
    * Set the {@link NilPolicy} to the builder.
+   *
    * @param nilPolicy the {@link NilPolicy}
    * @return {@code SyslogParserBuilder}
    */
@@ -82,13 +87,11 @@ public class SyslogParserBuilder {
 
   /**
    * Builds a new {@link SyslogParser} instance using options if provided.
+   *
    * @return {@link SyslogParser}
-   * @throws IllegalStateException if specification is unknown
+   * @throws IllegalStateException if deviations is unknown
    */
   public SyslogParser build() {
-    if (specification == SyslogSpecification.RFC_5424) {
-      return new Rfc5424SyslogParser(keyProvider, nilPolicy, structuredDataPolicy);
-    }
-    throw new IllegalStateException("unknown SyslogSpecification " + specification.name());
+    return new Rfc5424SyslogParser(keyProvider, nilPolicy, structuredDataPolicy, deviations);
   }
 }

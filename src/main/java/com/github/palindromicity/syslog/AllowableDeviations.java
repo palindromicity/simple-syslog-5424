@@ -17,12 +17,20 @@
 package com.github.palindromicity.syslog;
 
 /**
- * Syslog Specifications, either official, such as RFC 5424, or unofficial.
- * specifications that cause custom parsing or allowences
+ * Allowable deviations from the spec.  This allows for fields such as Priority and Version
+ * which are required by spec to be missing by convention.
  */
-public enum SyslogSpecification {
+public enum AllowableDeviations {
   /**
    * Properly formed RFC 5424 Syslog.
    */
-  RFC_5424
+  NONE,
+  /**
+   * RFC 5424 Syslog that does not have PRIORITY.
+   */
+  PRIORITY,
+  /**
+   * RFC 5424 Syslog that does not have VERSION.
+   */
+  VERSION
 }

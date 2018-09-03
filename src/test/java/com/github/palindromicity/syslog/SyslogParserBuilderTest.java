@@ -18,13 +18,15 @@ package com.github.palindromicity.syslog;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.EnumSet;
+
 import org.junit.Test;
 
 public class SyslogParserBuilderTest {
 
   @Test
   public void testWithSpecification() {
-    SyslogParser parser = new SyslogParserBuilder().forSpecification(SyslogSpecification.RFC_5424).build();
+    SyslogParser parser = new SyslogParserBuilder().withDeviations(EnumSet.of(AllowableDeviations.NONE)).build();
     assertTrue(parser.getClass() == Rfc5424SyslogParser.class);
   }
 

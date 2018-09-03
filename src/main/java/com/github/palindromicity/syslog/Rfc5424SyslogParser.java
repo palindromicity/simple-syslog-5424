@@ -18,6 +18,7 @@ package com.github.palindromicity.syslog;
 
 import java.io.BufferedReader;
 import java.io.Reader;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -47,6 +48,7 @@ class Rfc5424SyslogParser implements SyslogParser {
    */
   private NilPolicy nilPolicy = NilPolicy.OMIT;
   private StructuredDataPolicy structuredDataPolicy = StructuredDataPolicy.FLATTEN;
+  private EnumSet<AllowableDeviations> deviations;
 
   /**
    * Create a new {@code Rfc5424SyslogParser}.
@@ -54,11 +56,16 @@ class Rfc5424SyslogParser implements SyslogParser {
    * @param keyProvider {@link com.github.palindromicity.syslog.KeyProvider} to provide keys for the
    * {@link Syslog5424Listener}.
    */
-  Rfc5424SyslogParser(KeyProvider keyProvider ) {
-    this(keyProvider, null, null);
+  Rfc5424SyslogParser(KeyProvider keyProvider) {
+    this(keyProvider, null, null, EnumSet.of(AllowableDeviations.NONE));
   }
 
   Rfc5424SyslogParser(KeyProvider keyProvider, NilPolicy nilPolicy, StructuredDataPolicy structuredDataPolicy) {
+    this(keyProvider, nilPolicy, structuredDataPolicy, EnumSet.of(AllowableDeviations.NONE));
+  }
+  
+  Rfc5424SyslogParser(KeyProvider keyProvider, NilPolicy nilPolicy, StructuredDataPolicy structuredDataPolicy,
+      EnumSet<AllowableDeviations> deviations) {
     Validate.notNull(keyProvider, "keyProvider");
     this.keyProvider = keyProvider;
     if (nilPolicy != null) {
@@ -67,6 +74,7 @@ class Rfc5424SyslogParser implements SyslogParser {
     if (structuredDataPolicy != null) {
       this.structuredDataPolicy = structuredDataPolicy;
     }
+    this.deviations = deviations;
   }
 
   @Override
@@ -76,7 +84,7 @@ class Rfc5424SyslogParser implements SyslogParser {
     lexer.removeErrorListeners();
     lexer.addErrorListener(new DefaultErrorListener());
     Rfc5424Parser parser = new Rfc5424Parser(new CommonTokenStream(lexer));
-    Syslog5424Listener listener = new Syslog5424Listener(keyProvider, nilPolicy, structuredDataPolicy);
+    Syslog5424Listener listener = new Syslog5424Listener(keyProvider, nilPolicy, structuredDataPolicy, deviations);
     parser.addParseListener(listener);
     parser.removeErrorListeners();
     parser.addErrorListener(new DefaultErrorListener());
