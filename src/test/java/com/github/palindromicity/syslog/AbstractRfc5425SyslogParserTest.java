@@ -22,6 +22,7 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public abstract class AbstractRfc5425SyslogParserTest {
@@ -36,6 +37,14 @@ public abstract class AbstractRfc5425SyslogParserTest {
       throws Exception {
     try (Reader reader = new BufferedReader(new FileReader(new File(fileName)))) {
       parser.parseLines(reader, consumer);
+    }
+  }
+
+  protected static void handleFile(String fileName, SyslogParser parser, Consumer<Map<String, Object>> consumer,
+      BiConsumer<String,Throwable> errorConsumer)
+      throws Exception {
+    try (Reader reader = new BufferedReader(new FileReader(new File(fileName)))) {
+      parser.parseLines(reader, consumer, errorConsumer);
     }
   }
 

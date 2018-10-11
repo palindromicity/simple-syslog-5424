@@ -126,6 +126,16 @@ public class Rfc5424SyslogParserTest extends AbstractRfc5425SyslogParserTest {
     });
   }
 
+  @Test
+  public void testParseLinesConsumerAndErrorConsumer() throws Exception {
+    final AtomicInteger mapCount = new AtomicInteger();
+    final AtomicInteger errorCount = new AtomicInteger();
+    SyslogParser parser = new SyslogParserBuilder().build();
+    handleFile("src/test/resources/log_all_with_errors.txt", parser, (map) -> mapCount.incrementAndGet(),
+        (line,throwable) -> errorCount.incrementAndGet());
+    Assert.assertEquals(1, mapCount.get());
+    Assert.assertEquals(3, errorCount.get());
+  }
 
   @Test
   public void testParseLines() throws Exception {

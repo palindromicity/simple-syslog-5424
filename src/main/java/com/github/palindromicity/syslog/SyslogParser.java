@@ -19,6 +19,7 @@ package com.github.palindromicity.syslog;
 import java.io.Reader;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -50,6 +51,7 @@ public interface SyslogParser {
    * @param reader {@code Reader} used.  It is not closed in this method.
    * @return {@code List} of {@code Map}
    * @throws com.github.palindromicity.syslog.dsl.ParseException if there is an error parsing
+   * @throws IllegalArgumentException if reader is null
    */
   List<Map<String, Object>> parseLines(Reader reader);
 
@@ -59,7 +61,21 @@ public interface SyslogParser {
    *
    * @param reader {@code Reader} used.  It is not closed in this method.
    * @param consumer the {@code Consumer}
-   * @throws com.github.palindromicity.syslog.dsl.ParseException if there is an error parsing
+   * @throws com.github.palindromicity.syslog.dsl.ParseException if there is an error parsing any line
+   * @throws IllegalArgumentException if reader or consumer are null
    */
   void parseLines(Reader reader, Consumer<Map<String, Object>> consumer);
+
+  /**
+   * Reads each line from the {@code Reader} and parses it to {@code Map}, which is passed to the
+   * provided {@code Consumer}. For any line where a {@code ParseException} would be thrown, it will
+   * will be passed to the errorConsumer.
+   *
+   * @param reader {@code Reader} used.  It is not closed in this method.
+   * @param messageConsumer the {@code Consumer} for messages
+   * @param errorConsumer the {@code Consumer} for syslog lines and their errors.
+   * @throws IllegalArgumentException if reader, messageConsumer, or errorConsumer are null
+   */
+  void parseLines(Reader reader, Consumer<Map<String, Object>> messageConsumer,
+      BiConsumer<String, Throwable> errorConsumer);
 }

@@ -18,9 +18,11 @@ package com.github.palindromicity.syslog;
 
 import java.io.BufferedReader;
 import java.io.Reader;
+import java.util.BitSet;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -63,7 +65,7 @@ class Rfc5424SyslogParser implements SyslogParser {
   Rfc5424SyslogParser(KeyProvider keyProvider, NilPolicy nilPolicy, StructuredDataPolicy structuredDataPolicy) {
     this(keyProvider, nilPolicy, structuredDataPolicy, EnumSet.of(AllowableDeviations.NONE));
   }
-  
+
   Rfc5424SyslogParser(KeyProvider keyProvider, NilPolicy nilPolicy, StructuredDataPolicy structuredDataPolicy,
       EnumSet<AllowableDeviations> deviations) {
     Validate.notNull(keyProvider, "keyProvider");
@@ -88,7 +90,7 @@ class Rfc5424SyslogParser implements SyslogParser {
     parser.addParseListener(listener);
     parser.removeErrorListeners();
     parser.addErrorListener(new DefaultErrorListener());
-    Rfc5424Parser.Syslog_msgContext ctx = parser.syslog_msg();
+    parser.syslog_msg();
     return listener.getMsgMap();
   }
 
@@ -109,8 +111,26 @@ class Rfc5424SyslogParser implements SyslogParser {
   @Override
   public void parseLines(Reader reader, Consumer<Map<String, Object>> consumer) {
     Validate.notNull(reader, "reader");
+    Validate.notNull(consumer, "consumer");
     new BufferedReader(reader).lines()
         .map(this::parseLine)
         .forEach(consumer);
+  }
+
+  @Override
+  public void parseLines(Reader reader, Consumer<Map<String, Object>> messageConsumer,
+      BiConsumer<String,Throwable> errorConsumer) {
+    Validate.notNull(reader, "reader");
+    Validate.notNull(reader, "messageConsumer");
+    Validate.notNull(reader, "errorConsumer");
+
+    List<String> lines = new BufferedReader(reader).lines().collect(Collectors.toList());
+    lines.forEach((line) -> {
+      try {
+        messageConsumer.accept(parseLine(line));
+      } catch (Throwable throwable) {
+        errorConsumer.accept(line, throwable);
+      }
+    });
   }
 }
