@@ -51,6 +51,17 @@ Just pass a `Consumer` to the function.
  
 ```
 
+```java
+ SyslogParser parser = new SyslogParserBuilder().build();
+  try (Reader reader = new BufferedReader(new FileReader(new File(fileName)))) {
+      parser.parseLines(reader, (map) -> {
+        // do something with each map
+      }, (line, throwable) -> {
+        // do something for a failed line
+      });
+  }
+```
+
 ### Options
 
 The `SyslogParserBuilder` supports options for changing the `AllowableVariations`, the `SyslogSpecifictation` and the `KeyProvider`.
