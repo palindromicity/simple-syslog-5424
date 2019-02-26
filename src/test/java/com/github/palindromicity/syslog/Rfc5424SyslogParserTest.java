@@ -34,6 +34,9 @@ public class Rfc5424SyslogParserTest extends AbstractRfc5425SyslogParserTest {
       + " [exampleSDID@32480 iut=\"4\" eventSource=\"Other Application\" eventID=\"2022\"] Removing instance";
   private static final String SYSLOG_LINE_NO_MSG = "<14>1 2014-06-20T09:14:07+00:00 loggregator"
       + " d0602076-b14a-4c55-852a-981e7afeed38 DEA MSG-01"
+      + " [exampleSDID@32473 iut=\"3\" eventSource=\"Application\" eventID=\"1011\"]";
+  private static final String SYSLOG_LINE_NO_MSG2 = "<14>1 2014-06-20T09:14:07+00:00 loggregator"
+      + " d0602076-b14a-4c55-852a-981e7afeed38 DEA MSG-01"
       + " [exampleSDID@32473 iut=\"3\" eventSource=\"Application\" eventID=\"1011\"]"
       + " [exampleSDID@32480 iut=\"4\" eventSource=\"Other Application\" eventID=\"2022\"]";
 
@@ -96,9 +99,10 @@ public class Rfc5424SyslogParserTest extends AbstractRfc5425SyslogParserTest {
   @SuppressWarnings("unchecked")
   public void testParseLineNoMessage() throws Exception {
     SyslogParser parser = new SyslogParserBuilder().build();
+    // parse with one SD
     Map<String, Object> map = handleLine(SYSLOG_LINE_NO_MSG, parser);
     Assert.assertEquals(expectedVersion, map.get(SyslogFieldKeys.HEADER_VERSION.getField()));
-    //Assert.assertEquals(expectedMessage, map.get(SyslogFieldKeys.MESSAGE.getField()));
+    Assert.assertNull(map.get(SyslogFieldKeys.MESSAGE.getField()));
     Assert.assertEquals(expectedAppName, map.get(SyslogFieldKeys.HEADER_APPNAME.getField()));
     Assert.assertEquals(expectedHostName, map.get(SyslogFieldKeys.HEADER_HOSTNAME.getField()));
     Assert.assertEquals(expectedPri, map.get(SyslogFieldKeys.HEADER_PRI.getField()));
@@ -112,6 +116,31 @@ public class Rfc5424SyslogParserTest extends AbstractRfc5425SyslogParserTest {
     Map<String, Object> structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultKeyProvider());
     Assert.assertTrue(structured.containsKey("exampleSDID@32473"));
     Map<String, Object> example1 = (Map<String, Object>) structured.get("exampleSDID@32473");
+    Assert.assertTrue(example1.containsKey("iut"));
+    Assert.assertTrue(example1.containsKey("eventSource"));
+    Assert.assertTrue(example1.containsKey("eventID"));
+    Assert.assertEquals(expectedIUT1, example1.get("iut").toString());
+    Assert.assertEquals(expectedEventSource1, example1.get("eventSource").toString());
+    Assert.assertEquals(expectedEventID1, example1.get("eventID").toString());
+
+    // parse with 2 SD
+
+    map = handleLine(SYSLOG_LINE_NO_MSG2, parser);
+    Assert.assertEquals(expectedVersion, map.get(SyslogFieldKeys.HEADER_VERSION.getField()));
+    Assert.assertNull(map.get(SyslogFieldKeys.MESSAGE.getField()));
+    Assert.assertEquals(expectedAppName, map.get(SyslogFieldKeys.HEADER_APPNAME.getField()));
+    Assert.assertEquals(expectedHostName, map.get(SyslogFieldKeys.HEADER_HOSTNAME.getField()));
+    Assert.assertEquals(expectedPri, map.get(SyslogFieldKeys.HEADER_PRI.getField()));
+    Assert.assertEquals(expectedSeverity, map.get(SyslogFieldKeys.HEADER_PRI_SEVERITY.getField()));
+    Assert.assertEquals(expectedFacility, map.get(SyslogFieldKeys.HEADER_PRI_FACILITY.getField()));
+    Assert.assertEquals(expectedProcId, map.get(SyslogFieldKeys.HEADER_PROCID.getField()));
+    Assert.assertEquals(expectedTimestamp, map.get(SyslogFieldKeys.HEADER_TIMESTAMP.getField()));
+    Assert.assertEquals(expectedMessageId, map.get(SyslogFieldKeys.HEADER_MSGID.getField()));
+
+    // structured data
+    structured = StructuredDataUtil.unFlattenStructuredData(map, new DefaultKeyProvider());
+    Assert.assertTrue(structured.containsKey("exampleSDID@32473"));
+    example1 = (Map<String, Object>) structured.get("exampleSDID@32473");
     Assert.assertTrue(example1.containsKey("iut"));
     Assert.assertTrue(example1.containsKey("eventSource"));
     Assert.assertTrue(example1.containsKey("eventID"));
