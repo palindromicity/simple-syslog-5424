@@ -26,7 +26,7 @@ import com.github.palindromicity.syslog.StructuredDataPolicy;
 import com.github.palindromicity.syslog.dsl.generated.Rfc5424Lexer;
 import com.github.palindromicity.syslog.dsl.generated.Rfc5424Parser;
 import com.github.palindromicity.syslog.util.StructuredDataUtil;
-import org.antlr.v4.runtime.ANTLRFileStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.Assert;
 import org.junit.Test;
@@ -89,44 +89,38 @@ public class Syslog5424ListenerTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void testAllPresentButPriority() throws Exception {
-    Map<String, Object> map = handleFile("src/test/resources/log_missing_pri.txt", NilPolicy.OMIT,
+    handleFile("src/test/resources/log_missing_pri.txt", NilPolicy.OMIT,
         StructuredDataPolicy.FLATTEN, EnumSet.of(AllowableDeviations.PRIORITY));
   }
 
   @Test(expected = ParseException.class)
-  @SuppressWarnings("unchecked")
   public void testAllPresentButPriorityNoDeviation() throws Exception {
-    Map<String, Object> map = handleFile("src/test/resources/log_missing_pri.txt", NilPolicy.OMIT,
+    handleFile("src/test/resources/log_missing_pri.txt", NilPolicy.OMIT,
         StructuredDataPolicy.FLATTEN, EnumSet.of(AllowableDeviations.NONE));
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void testAllPresentButVersion() throws Exception {
-    Map<String, Object> map = handleFile("src/test/resources/log_missing_version.txt", NilPolicy.OMIT,
+    handleFile("src/test/resources/log_missing_version.txt", NilPolicy.OMIT,
         StructuredDataPolicy.FLATTEN, EnumSet.of(AllowableDeviations.VERSION));
   }
 
   @Test(expected = ParseException.class)
-  @SuppressWarnings("unchecked")
   public void testAllPresentButVersionNoDeviation() throws Exception {
-    Map<String, Object> map = handleFile("src/test/resources/log_missing_version.txt", NilPolicy.OMIT,
+    handleFile("src/test/resources/log_missing_version.txt", NilPolicy.OMIT,
         StructuredDataPolicy.FLATTEN, EnumSet.of(AllowableDeviations.NONE));
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void testAllPresentButPriVersion() throws Exception {
-    Map<String, Object> map = handleFile("src/test/resources/log_missing_priversion.txt", NilPolicy.OMIT,
+    handleFile("src/test/resources/log_missing_priversion.txt", NilPolicy.OMIT,
         StructuredDataPolicy.FLATTEN, EnumSet.of(AllowableDeviations.PRIORITY, AllowableDeviations.VERSION));
   }
 
   @Test(expected = ParseException.class)
-  @SuppressWarnings("unchecked")
   public void testAllPresentButPriVersionNoDeviation() throws Exception {
-    Map<String, Object> map = handleFile("src/test/resources/log_missing_priversion.txt", NilPolicy.OMIT,
+    handleFile("src/test/resources/log_missing_priversion.txt", NilPolicy.OMIT,
         StructuredDataPolicy.FLATTEN, EnumSet.of(AllowableDeviations.NONE));
   }
 
@@ -169,6 +163,7 @@ public class Syslog5424ListenerTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void testMissingHeaderFieldOmit() throws Exception {
     Map<String, Object> map = handleFile("src/test/resources/log.txt");
     Assert.assertEquals(expectedVersion, map.get(SyslogFieldKeys.HEADER_VERSION.getField()));
@@ -204,6 +199,7 @@ public class Syslog5424ListenerTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void testMissingHeaderFieldNull() throws Exception {
     Map<String, Object> map = handleFile("src/test/resources/log.txt", NilPolicy.NULL);
     Assert.assertEquals(expectedVersion, map.get(SyslogFieldKeys.HEADER_VERSION.getField()));
@@ -239,6 +235,7 @@ public class Syslog5424ListenerTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void testMissingHeaderFieldDash() throws Exception {
     Map<String, Object> map = handleFile("src/test/resources/log.txt", NilPolicy.DASH);
     Assert.assertEquals(expectedVersion, map.get(SyslogFieldKeys.HEADER_VERSION.getField()));
@@ -288,7 +285,7 @@ public class Syslog5424ListenerTest {
     Assert.assertFalse(map.containsKey(SyslogFieldKeys.HEADER_MSGID.getField()));
     for (String key : map.keySet()) {
       if (key.startsWith(SyslogFieldKeys.STRUCTURED_BASE.getField())) {
-        Assert.assertTrue(false);
+        Assert.fail();
       }
     }
 
@@ -309,12 +306,12 @@ public class Syslog5424ListenerTest {
 
   private static Map<String, Object> handleFile(String fileName, NilPolicy nilPolicy,
       StructuredDataPolicy structuredDataPolicy, EnumSet<AllowableDeviations> deviations) throws Exception {
-    Rfc5424Lexer lexer = new Rfc5424Lexer(new ANTLRFileStream(fileName));
+    Rfc5424Lexer lexer = new Rfc5424Lexer(CharStreams.fromFileName(fileName));
     Rfc5424Parser parser = new Rfc5424Parser(new CommonTokenStream(lexer));
     Syslog5424Listener listener = new Syslog5424Listener(new DefaultKeyProvider(), nilPolicy, structuredDataPolicy,
         deviations);
     parser.addParseListener(listener);
-    Rfc5424Parser.Syslog_msgContext ctx = parser.syslog_msg();
+    parser.syslog_msg();
     return listener.getMsgMap();
   }
 
