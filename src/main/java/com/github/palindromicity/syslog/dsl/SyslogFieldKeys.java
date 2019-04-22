@@ -20,7 +20,7 @@ public enum SyslogFieldKeys {
   STRUCTURED_ELEMENT_ID_PNAME_PATTERN("syslog.structuredData\\.(.*)\\.(.*)$");
 
   private String field;
-  private SyslogFieldKeys(String field) {
+  SyslogFieldKeys(String field) {
     this.field = field;
   }
 

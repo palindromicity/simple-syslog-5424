@@ -18,7 +18,6 @@ package com.github.palindromicity.syslog;
 
 import java.io.BufferedReader;
 import java.io.Reader;
-import java.util.BitSet;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +31,8 @@ import com.github.palindromicity.syslog.dsl.generated.Rfc5424Lexer;
 import com.github.palindromicity.syslog.dsl.generated.Rfc5424Parser;
 import com.github.palindromicity.syslog.util.Validate;
 import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
 /**
@@ -82,7 +83,7 @@ class Rfc5424SyslogParser implements SyslogParser {
   @Override
   public Map<String, Object> parseLine(String syslogLine) {
     Validate.notBlank(syslogLine, "syslogLine");
-    Rfc5424Lexer lexer = new Rfc5424Lexer(new ANTLRInputStream(syslogLine));
+    Rfc5424Lexer lexer = new Rfc5424Lexer(CharStreams.fromString(syslogLine));
     lexer.removeErrorListeners();
     lexer.addErrorListener(new DefaultErrorListener());
     Rfc5424Parser parser = new Rfc5424Parser(new CommonTokenStream(lexer));
