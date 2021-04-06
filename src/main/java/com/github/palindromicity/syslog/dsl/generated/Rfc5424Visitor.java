@@ -253,25 +253,12 @@ public interface Rfc5424Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSd_name(Rfc5424Parser.Sd_nameContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code msgAny}
-	 * labeled alternative in {@link Rfc5424Parser#msg}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMsgAny(Rfc5424Parser.MsgAnyContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code msgUTF8}
 	 * labeled alternative in {@link Rfc5424Parser#msg}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitMsgUTF8(Rfc5424Parser.MsgUTF8Context ctx);
-	/**
-	 * Visit a parse tree produced by {@link Rfc5424Parser#msg_any}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMsg_any(Rfc5424Parser.Msg_anyContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Rfc5424Parser#msg_utf8}.
 	 * @param ctx the parse tree

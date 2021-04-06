@@ -89,6 +89,22 @@ public class Syslog5424ListenerTest {
   }
 
   @Test
+  public void testBomParsing() throws Exception {
+    Map<String, Object> map = handleFile("src/test/resources/log_with_bom.txt", NilPolicy.OMIT,
+        StructuredDataPolicy.MAP_OF_MAPS, EnumSet.of(AllowableDeviations.PRIORITY));
+    Assert.assertNotNull(map);
+  }
+
+  //log_utf8_umlauts.txt
+  @Test
+  public void testBomParsingUmlauts() throws Exception {
+    Map<String, Object> map = handleFile("src/test/resources/log_utf8_umlauts.txt", NilPolicy.OMIT,
+        StructuredDataPolicy.MAP_OF_MAPS, EnumSet.of(AllowableDeviations.PRIORITY));
+    Assert.assertNotNull(map);
+    Assert.assertTrue(map.get("syslog.message").toString().contains("äöü"));
+  }
+
+  @Test
   public void testAllPresentButPriority() throws Exception {
     handleFile("src/test/resources/log_missing_pri.txt", NilPolicy.OMIT,
         StructuredDataPolicy.FLATTEN, EnumSet.of(AllowableDeviations.PRIORITY));
@@ -307,6 +323,7 @@ public class Syslog5424ListenerTest {
   private static Map<String, Object> handleFile(String fileName, NilPolicy nilPolicy,
       StructuredDataPolicy structuredDataPolicy, EnumSet<AllowableDeviations> deviations) throws Exception {
     Rfc5424Lexer lexer = new Rfc5424Lexer(CharStreams.fromFileName(fileName));
+    CommonTokenStream tokens = new CommonTokenStream(lexer);
     Rfc5424Parser parser = new Rfc5424Parser(new CommonTokenStream(lexer));
     Syslog5424Listener listener = new Syslog5424Listener(new DefaultKeyProvider(), nilPolicy, structuredDataPolicy,
         deviations);
