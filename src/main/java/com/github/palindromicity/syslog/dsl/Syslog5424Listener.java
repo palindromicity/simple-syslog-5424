@@ -217,14 +217,6 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
   }
 
   @Override
-  public void exitMsg_any(Rfc5424Parser.Msg_anyContext ctx) {
-    final String msg = ctx.getText();
-    if (msg != null && !msg.isEmpty()) {
-      msgMap.put(keyProvider.getMessage(), msg.trim());
-    }
-  }
-
-  @Override
   public void exitMsg_utf8(Rfc5424Parser.Msg_utf8Context ctx) {
     final String msg = ctx.getText();
     if (msg != null && !msg.isEmpty()) {

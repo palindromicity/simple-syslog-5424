@@ -443,18 +443,6 @@ public class Rfc5424BaseListener implements Rfc5424Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMsgAny(Rfc5424Parser.MsgAnyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitMsgAny(Rfc5424Parser.MsgAnyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterMsgUTF8(Rfc5424Parser.MsgUTF8Context ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -462,18 +450,6 @@ public class Rfc5424BaseListener implements Rfc5424Listener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMsgUTF8(Rfc5424Parser.MsgUTF8Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterMsg_any(Rfc5424Parser.Msg_anyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitMsg_any(Rfc5424Parser.Msg_anyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
