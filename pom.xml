@@ -7,10 +7,20 @@
   <packaging>jar</packaging>
 
   <name>simple-syslog-5424</name>
+  <description>A java library for parsing valid RFC 5324 syslog</description>
+  <url>https://github.com/palindromicity</url>
   <organization>
     <name>palindromicity</name>
     <url>https://github.com/palindromicity</url>
   </organization>
+  <developers>
+    <developer>
+      <name>Otto Fowler</name>
+      <email>ottobackwards@gmail.com</email>
+      <organization>palindromicity</organization>
+      <organizationUrl>https://github.com/palindromicity</organizationUrl>
+    </developer>
+  </developers>
   <scm>
     <connection>scm:git:https://github.com/palindromicity/simple-syslog-5424.git</connection>
     <developerConnection>scm:git:git@github.com:palindromicity/simple-syslog-5424.git</developerConnection>

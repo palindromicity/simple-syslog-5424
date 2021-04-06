@@ -169,26 +169,12 @@ For example you would build a 'parser' that used your implementations, most like
 
 --------
 
-```xml
-<repositories>
-  <repository>
-    <id>bintray</id>
-    <url>http://dl.bintray.com/palndromicity/simple-syslog-5424</url>
-    <releases>
-      <enabled>true</enabled>
-    </releases>
-    <snapshots>
-      <enabled>false</enabled>
-    </snapshots>
-  </repository>
-</repositories>
-```
 
 ```xml
 <dependency>
   <groupId>com.github.palindromicity</groupId>
   <artifactId>simple-syslog-5424</artifactId>
-  <version>0.0.8</version>
+  <version>0.0.16</version>
   <type>pom</type>
 </dependency>
 ```
