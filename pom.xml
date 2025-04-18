@@ -39,7 +39,7 @@
   <properties>
     <maven.min-version>3.5.2</maven.min-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <global_antlr_version>4.7.2</global_antlr_version>
+    <global_antlr_version>4.13.2</global_antlr_version>
   </properties>
   <distributionManagement>
     <snapshotRepository>
