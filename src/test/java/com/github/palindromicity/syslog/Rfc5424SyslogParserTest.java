@@ -16,6 +16,9 @@
 
 package com.github.palindromicity.syslog;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -409,5 +412,35 @@ public class Rfc5424SyslogParserTest extends AbstractRfc5425SyslogParserTest {
     handleLine("10 Oct 13 14:14:43 localhost some body of the message", parser, (map) -> {
       Assert.fail();
     });
+  }
+
+  @Test
+  public void testParseLineAtna() throws Exception {
+    final SyslogParser parser = new SyslogParserBuilder().build();
+    final List<Map<String, Object>> mapList = handleFile("src/test/resources/log_atna.txt", parser);
+    Assert.assertEquals(1, mapList.size());
+    final Map<String, Object> map = mapList.get(0);
+
+    final String message = (String) map.get(SyslogFieldKeys.MESSAGE.getField());
+    Assert.assertNotNull(message);
+    // Multiple whitespaces should be kept
+    Assert.assertTrue(message.contains("  "));
+    Assert.assertFalse(message.contains("=\"0\"Event"));
+  }
+
+  @Test
+  public void testParseLinesWithInvalidWhitespaces() throws Exception {
+    final SyslogParser parser = new SyslogParserBuilder().build();
+    final Path path = Paths.get("src/test/resources/log_invalid_whitespaces.txt");
+    final List<String> lines = Files.readAllLines(path);
+
+    for (final String line : lines) {
+      try {
+        handleLine(line, parser);
+        Assert.fail("The parsing of the invalid line should have failed: " + line);
+      } catch (final Exception e) {
+        Assert.assertTrue(e instanceof ParseException || e instanceof NullPointerException);
+      }
+    }
   }
 }
