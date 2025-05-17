@@ -439,7 +439,7 @@ public class Rfc5424SyslogParserTest extends AbstractRfc5425SyslogParserTest {
         handleLine(line, parser);
         Assert.fail("The parsing of the invalid line should have failed: " + line);
       } catch (final Exception e) {
-        Assert.assertTrue(e instanceof ParseException || e instanceof NullPointerException);
+        Assert.assertTrue(e instanceof ParseException);
       }
     }
   }
