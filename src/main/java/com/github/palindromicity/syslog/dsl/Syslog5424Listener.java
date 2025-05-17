@@ -116,11 +116,15 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
   public void exitHeaderPriorityValue(Rfc5424Parser.HeaderPriorityValueContext ctx) {
     String priority = ctx.getText();
     msgMap.put(keyProvider.getHeaderPriority(), priority);
-    int pri = Integer.parseInt(priority);
-    int sev = pri % 8;
-    int facility = pri / 8;
-    msgMap.put(keyProvider.getHeaderSeverity(), String.valueOf(sev));
-    msgMap.put(keyProvider.getHeaderFacility(), String.valueOf(facility));
+    try {
+      int pri = Integer.parseInt(priority);
+      int sev = pri % 8;
+      int facility = pri / 8;
+      msgMap.put(keyProvider.getHeaderSeverity(), String.valueOf(sev));
+      msgMap.put(keyProvider.getHeaderFacility(), String.valueOf(facility));
+    } catch (NumberFormatException e) {
+      throw new ParseException("Invalid priority specified " + priority);
+    }
   }
 
   @Override
@@ -181,8 +185,12 @@ public class Syslog5424Listener extends Rfc5424BaseListener {
 
   @Override
   public void exitHeaderTimeStamp(Rfc5424Parser.HeaderTimeStampContext ctx) {
-    msgMap.put(keyProvider.getHeaderTimeStamp(), ctx.full_date().getText()
-        + "T" + ctx.full_time().getText());
+    try {
+      msgMap.put(keyProvider.getHeaderTimeStamp(), ctx.full_date().getText()
+              + "T" + ctx.full_time().getText());
+    } catch (NullPointerException e) {
+      throw new ParseException("Timestamp missing with strict parsing");
+    }
   }
 
   @Override
